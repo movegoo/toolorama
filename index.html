@@ -562,76 +562,73 @@ tbody td {
 // ==================== DATA ====================
 const USD_TO_EUR = 0.844;
 
+// Real data from Google Sheet (snapshot 17/02/2026)
+// Entries with "NC", "Je ne connais pas", or unknown pricing are flagged excluded=true
 const rawTools = [
-  // MS Group
-  { name: "Slack", team: "All", bu: "MS group", price: 12.50, currency: "USD", renewal: "monthly", seats: 180 },
-  { name: "Google Workspace", team: "All", bu: "MS group", price: 14.40, currency: "USD", renewal: "monthly", seats: 180 },
-  { name: "Notion", team: "All", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 140 },
-  { name: "Figma", team: "Design", bu: "MS group", price: 15, currency: "USD", renewal: "monthly", seats: 22 },
-  { name: "Miro", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 35 },
-  { name: "Linear", team: "Engineering", bu: "MS group", price: 8, currency: "USD", renewal: "monthly", seats: 45 },
-  { name: "GitHub Enterprise", team: "Engineering", bu: "MS group", price: 21, currency: "USD", renewal: "monthly", seats: 48 },
-  { name: "Datadog", team: "Engineering", bu: "MS group", price: 23, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "AWS (infra)", team: "Engineering", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Vercel", team: "Engineering", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 15 },
-  { name: "HubSpot", team: "Marketing", bu: "MS group", price: 890, currency: "EUR", renewal: "monthly", seats: 12 },
-  { name: "Salesforce", team: "Sales", bu: "MS group", price: 75, currency: "EUR", renewal: "monthly", seats: 25 },
-  { name: "Zendesk", team: "Support", bu: "MS group", price: 55, currency: "EUR", renewal: "monthly", seats: 18 },
-  { name: "1Password", team: "All", bu: "MS group", price: 7.99, currency: "USD", renewal: "monthly", seats: 180 },
-  { name: "Loom", team: "All", bu: "MS group", price: 12.50, currency: "USD", renewal: "monthly", seats: 60 },
-  { name: "Zapier", team: "Ops", bu: "MS group", price: 599, currency: "USD", renewal: "monthly", seats: 1 },
-
-  // Farly
-  { name: "Slack", team: "All", bu: "Farly", price: 12.50, currency: "USD", renewal: "monthly", seats: 45 },
-  { name: "Google Workspace", team: "All", bu: "Farly", price: 14.40, currency: "USD", renewal: "monthly", seats: 45 },
-  { name: "Notion", team: "All", bu: "Farly", price: 10, currency: "USD", renewal: "monthly", seats: 40 },
-  { name: "Figma", team: "Design", bu: "Farly", price: 15, currency: "USD", renewal: "monthly", seats: 8 },
-  { name: "Linear", team: "Engineering", bu: "Farly", price: 8, currency: "USD", renewal: "monthly", seats: 18 },
-  { name: "GitHub Team", team: "Engineering", bu: "Farly", price: 4, currency: "USD", renewal: "monthly", seats: 18 },
-  { name: "Vercel", team: "Engineering", bu: "Farly", price: 20, currency: "USD", renewal: "monthly", seats: 5 },
-  { name: "AWS (infra)", team: "Engineering", bu: "Farly", price: 28000, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Amplitude", team: "Product", bu: "Farly", price: 36000, currency: "USD", renewal: "yearly", seats: 1 },
-  { name: "Intercom", team: "Support", bu: "Farly", price: 74, currency: "USD", renewal: "monthly", seats: 8 },
-  { name: "Stripe (SaaS fee)", team: "Finance", bu: "Farly", price: 239, currency: "EUR", renewal: "monthly", seats: 1 },
-  { name: "Mixpanel", team: "Product", bu: "Farly", price: 834, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "SendGrid", team: "Engineering", bu: "Farly", price: 89, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Sentry", team: "Engineering", bu: "Farly", price: 26, currency: "USD", renewal: "monthly", seats: 12 },
-
-  // Story
-  { name: "Slack", team: "All", bu: "Story", price: 12.50, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "Google Workspace", team: "All", bu: "Story", price: 14.40, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "Notion", team: "All", bu: "Story", price: 10, currency: "USD", renewal: "monthly", seats: 28 },
-  { name: "Figma", team: "Design", bu: "Story", price: 15, currency: "USD", renewal: "monthly", seats: 6 },
-  { name: "Linear", team: "Engineering", bu: "Story", price: 8, currency: "USD", renewal: "monthly", seats: 14 },
-  { name: "GitHub Team", team: "Engineering", bu: "Story", price: 4, currency: "USD", renewal: "monthly", seats: 14 },
-  { name: "AWS (infra)", team: "Engineering", bu: "Story", price: 18000, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Webflow", team: "Marketing", bu: "Story", price: 39, currency: "USD", renewal: "monthly", seats: 3 },
-  { name: "Mailchimp", team: "Marketing", bu: "Story", price: 350, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Hotjar", team: "Product", bu: "Story", price: 80, currency: "EUR", renewal: "monthly", seats: 1 },
-  { name: "Airtable", team: "Ops", bu: "Story", price: 20, currency: "USD", renewal: "monthly", seats: 10 },
-  { name: "Calendly", team: "Sales", bu: "Story", price: 12, currency: "USD", renewal: "monthly", seats: 8 },
-  { name: "Typeform", team: "Marketing", bu: "Story", price: 59, currency: "EUR", renewal: "monthly", seats: 1 },
-  { name: "Canva Pro", team: "Design", bu: "Story", price: 12.99, currency: "EUR", renewal: "monthly", seats: 5 },
-  { name: "Sentry", team: "Engineering", bu: "Story", price: 26, currency: "USD", renewal: "monthly", seats: 8 },
-
-  // Widely
-  { name: "Slack", team: "All", bu: "Widely", price: 12.50, currency: "USD", renewal: "monthly", seats: 65 },
-  { name: "Google Workspace", team: "All", bu: "Widely", price: 14.40, currency: "USD", renewal: "monthly", seats: 65 },
-  { name: "Notion", team: "All", bu: "Widely", price: 10, currency: "USD", renewal: "monthly", seats: 55 },
-  { name: "Figma", team: "Design", bu: "Widely", price: 15, currency: "USD", renewal: "monthly", seats: 12 },
-  { name: "Linear", team: "Engineering", bu: "Widely", price: 8, currency: "USD", renewal: "monthly", seats: 28 },
-  { name: "GitHub Enterprise", team: "Engineering", bu: "Widely", price: 21, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "AWS (infra)", team: "Engineering", bu: "Widely", price: 42000, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Snowflake", team: "Data", bu: "Widely", price: 7110, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Looker", team: "Data", bu: "Widely", price: 50000, currency: "USD", renewal: "yearly", seats: 1 },
-  { name: "dbt Cloud", team: "Data", bu: "Widely", price: 100, currency: "USD", renewal: "monthly", seats: 5 },
-  { name: "Segment", team: "Data", bu: "Widely", price: 12000, currency: "USD", renewal: "yearly", seats: 1 },
-  { name: "Braze", team: "Marketing", bu: "Widely", price: 60000, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "Zendesk", team: "Support", bu: "Widely", price: 55, currency: "EUR", renewal: "monthly", seats: 22 },
-  { name: "Jira", team: "Engineering", bu: "Widely", price: 8.15, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "Confluence", team: "Engineering", bu: "Widely", price: 5.75, currency: "USD", renewal: "monthly", seats: 30 },
-  { name: "PagerDuty", team: "Engineering", bu: "Widely", price: 21, currency: "USD", renewal: "monthly", seats: 10 },
-  { name: "Postman", team: "Engineering", bu: "Widely", price: 14, currency: "USD", renewal: "monthly", seats: 15 },
+  { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27 },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 24, currency: "USD", renewal: "monthly", seats: 1, note: "Vincent" },
+  { name: "Creatify", team: "Adops", bu: "Farly", price: 39, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 60, currency: "USD", renewal: "monthly", seats: 1, note: "Nicolas" },
+  { name: "Copilot", team: "Tech", bu: "MS group", price: 39, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Apptweak", team: "Media Buying & UA, Adops", bu: "Farly", price: 249, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Notion", team: "All", bu: "MS group", price: 0, currency: "EUR", renewal: "monthly", seats: 174 },
+  { name: "Notion (pages publiques)", team: "All", bu: "MS group", price: 23.5, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Pandadoc", team: "Sales", bu: "Widely", price: 1868, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "Copilot", team: "Tech", bu: "MS group", price: 21.6, currency: "EUR", renewal: "monthly", seats: 4 },
+  { name: "Copilot", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 5 },
+  { name: "Pycharm", team: "Tech", bu: "MS group", price: 300, currency: "EUR", renewal: "yearly", seats: 2 },
+  { name: "DataGrip", team: "Tech", bu: "MS group", price: 259, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "NordVPN", team: "Ops/Products, Publisher, AM", bu: "Farly", price: 195, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "NordPass", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 83, currency: "USD", renewal: "yearly", seats: 24 },
+  { name: "Timetastic", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1.5, currency: "USD", renewal: "monthly", seats: 22 },
+  { name: "24Metrics", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1400, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Docusign", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "Everflow", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 9500, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Affilitest", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 99, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Keyword Tool", team: "Conseil", bu: "Story", price: 190, currency: "EUR", renewal: "yearly", seats: 5 },
+  { name: "Social Insider", team: "Conseil", bu: "Story", price: 3500, currency: "USD", renewal: "yearly", seats: 5 },
+  { name: "Cursor", team: "Créa - Ad content", bu: "Story", price: 20, currency: "USD", renewal: "monthly", seats: 3 },
+  { name: "Gamma", team: "Partners", bu: "MS group", price: 24, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "ChatGPT", team: "All", bu: "MS group", price: 30, currency: "USD", renewal: "monthly", seats: 22 },
+  { name: "PhantomBuster", team: "Sales, Marketing", bu: "MS group", price: 69, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Scrape Creators", team: "Product, Vidéo", bu: "MS group", price: 49, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Submagic", team: "Vidéo", bu: "Story", price: 1104, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Artlist", team: "Vidéo", bu: "Story", price: 575, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Envato", team: "Vidéo", bu: "Story", price: 39, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "iStock", team: "Édito", bu: "Story", price: 1758.9, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Signaturit", team: "RH / Admin", bu: "MS group", price: 330, currency: "EUR", renewal: "yearly", seats: 3 },
+  { name: "Screenful", team: "Tech, Product", bu: "MS group", price: 141, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Figma", team: "Créa - digital/Ad content", bu: "Story", price: 20, currency: "EUR", renewal: "monthly", seats: 25 },
+  { name: "Overlord 2", team: "Créa - Ad content", bu: "Story", price: 70, currency: "USD", renewal: "yearly", seats: 3 },
+  { name: "Envato Elements", team: "Créa - digital/Ad content", bu: "Story", price: 46.8, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Jimo", team: "Product", bu: "MS group", price: 480, currency: "EUR", renewal: "yearly", seats: 15 },
+  { name: "Figma", team: "Product", bu: "MS group", price: 600, currency: "USD", renewal: "yearly", seats: 6 },
+  { name: "Linear", team: "Tech, Product", bu: "MS group", price: 360, currency: "USD", renewal: "yearly", seats: 39 },
+  { name: "IntelliJ", team: "Tech", bu: "MS group", price: 239, currency: "EUR", renewal: "yearly", seats: 1, note: "Fourchette 179-299, prix moyen" },
+  { name: "Supermetrics", team: "Media Buying & UA, Conseil", bu: "Story", price: 1596, currency: "EUR", renewal: "yearly", seats: 3 },
+  { name: "Adobe", team: "Créa, Vidéo", bu: "Story", price: 0, currency: "EUR", renewal: "yearly", seats: 28, excluded: true, note: "Prix enterprise inconnu" },
+  { name: "Pitch", team: "All", bu: "MS group", price: 204, currency: "EUR", renewal: "yearly", seats: 82 },
+  { name: "Filestage", team: "Créa, Vidéo", bu: "Story", price: 7110, currency: "EUR", renewal: "yearly", seats: 47, note: "Prix total, 45-50 sièges" },
+  { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total" },
+  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "ChatGPT (duplicate)", team: "Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "NC — doublon probable" },
+  { name: "Pitch", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "Sharepoint", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "Monday", team: "Adops, Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "Apollo.io", team: "Sales", bu: "Farly", price: 0, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Crowdin", team: "Product", bu: "MS group", price: 1595, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Pennylane", team: "Finances", bu: "MS group", price: 12000, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "LinkedIn Sales Nav", team: "Sales", bu: "MS group", price: 13000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Monday", team: "All", bu: "Story", price: 192, currency: "USD", renewal: "yearly", seats: 87 },
+  { name: "Crisp", team: "Tech, Product", bu: "Story", price: 95, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Quicksight", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Monday", team: "Adops", bu: "Widely", price: 19, currency: "EUR", renewal: "monthly", seats: 16 },
+  { name: "ChatGPT", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Filestage", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Microsoft Office", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Notion", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
 ];
 
 // ==================== COMPUTE ====================
@@ -646,14 +643,32 @@ function computeAnnualCostEUR(t) {
   return Math.round(cost);
 }
 
-const tools = rawTools.map(t => ({
+// Split multi-team entries into primary team (first listed)
+function primaryTeam(t) {
+  const raw = t.team;
+  if (raw === 'All') return 'All';
+  return raw.split(',')[0].trim();
+}
+
+const tools = rawTools
+  .filter(t => !t.excluded && t.price > 0) // Exclude NC/unknown and free tools
+  .map(t => ({
+    ...t,
+    annualCost: computeAnnualCostEUR(t),
+    pricePerSeat: t.price,
+    primaryTeam: primaryTeam(t)
+  }));
+
+// Also keep excluded items for display in table (greyed out)
+const allToolsForTable = rawTools.map(t => ({
   ...t,
-  annualCost: computeAnnualCostEUR(t),
-  pricePerSeat: t.price
+  annualCost: t.excluded ? 0 : computeAnnualCostEUR(t),
+  pricePerSeat: t.price,
+  primaryTeam: primaryTeam(t)
 }));
 
 const BU_LIST = ["MS group", "Farly", "Story", "Widely"];
-const TEAM_LIST = [...new Set(tools.map(t => t.team))].sort();
+const TEAM_LIST = [...new Set(tools.map(t => t.primaryTeam))].sort();
 
 const BU_COLORS = {
   "MS group": "#FF4F9A",
@@ -681,7 +696,13 @@ let sortDir = -1;
 function getFiltered() {
   return tools.filter(t =>
     selectedBUs.has(t.bu) &&
-    selectedTeams.has(t.team) &&
+    selectedTeams.has(t.primaryTeam) &&
+    (searchTerm === '' || t.name.toLowerCase().includes(searchTerm))
+  );
+}
+function getFilteredForTable() {
+  return allToolsForTable.filter(t =>
+    selectedBUs.has(t.bu) &&
     (searchTerm === '' || t.name.toLowerCase().includes(searchTerm))
   );
 }
@@ -794,10 +815,10 @@ function render() {
   ).join('');
 
   // Donut Team
-  const teamData = TEAM_LIST.map(tm => filtered.filter(t => t.team === tm).reduce((s, t) => s + t.annualCost, 0)).filter((_, i) => {
-    return filtered.some(t => t.team === TEAM_LIST[i]);
+  const teamData = TEAM_LIST.map(tm => filtered.filter(t => t.primaryTeam === tm).reduce((s, t) => s + t.annualCost, 0)).filter((_, i) => {
+    return filtered.some(t => t.primaryTeam === TEAM_LIST[i]);
   });
-  const teamLabelsFiltered = TEAM_LIST.filter(tm => filtered.some(t => t.team === tm));
+  const teamLabelsFiltered = TEAM_LIST.filter(tm => filtered.some(t => t.primaryTeam === tm));
   const teamColorsFiltered = teamLabelsFiltered.map(t => TEAM_COLORS[t]);
   const teamTotal = teamData.reduce((a, b) => a + b, 0);
   document.getElementById('team-center-amount').textContent = fmtK(teamTotal);
@@ -885,24 +906,29 @@ function render() {
 
   // Table
   const BU_TAG_CLASS = { "MS group": "bu-ms", "Farly": "bu-farly", "Story": "bu-story", "Widely": "bu-widely" };
-  const tableSorted = [...filtered].sort((a, b) => {
+  const tableData = getFilteredForTable();
+  const tableSorted = [...tableData].sort((a, b) => {
     let va = a[sortCol], vb = b[sortCol];
     if (typeof va === 'string') va = va.toLowerCase();
     if (typeof vb === 'string') vb = vb.toLowerCase();
     return va < vb ? -sortDir : va > vb ? sortDir : 0;
   });
 
-  document.getElementById('table-body').innerHTML = tableSorted.map(t => `
-    <tr>
-      <td style="font-weight:600">${t.name}</td>
+  document.getElementById('table-body').innerHTML = tableSorted.map(t => {
+    const isExcluded = t.excluded || t.price === 0;
+    const rowStyle = isExcluded ? 'opacity:0.45;' : '';
+    const costDisplay = isExcluded ? (t.note || 'NC') : fmt(t.annualCost);
+    const priceDisplay = t.price > 0 ? t.price.toLocaleString('fr-FR') + ' ' + (t.currency === 'USD' ? '$' : '€') : (t.note || 'NC');
+    return `<tr style="${rowStyle}">
+      <td style="font-weight:600">${t.name}${t.note && !isExcluded ? ' <span style="font-size:0.65rem;color:var(--text-light)" title="'+t.note+'">ℹ️</span>' : ''}</td>
       <td>${t.team}</td>
       <td><span class="bu-tag ${BU_TAG_CLASS[t.bu]}">${t.bu}</span></td>
       <td>${t.renewal}</td>
-      <td>${t.seats}</td>
-      <td>${t.price.toLocaleString('fr-FR')} ${t.currency === 'USD' ? '$' : '€'}</td>
-      <td style="font-weight:700">${fmt(t.annualCost)}</td>
-    </tr>
-  `).join('');
+      <td>${t.seats || 'NC'}</td>
+      <td>${priceDisplay}</td>
+      <td style="font-weight:700">${costDisplay}</td>
+    </tr>`;
+  }).join('');
 
   // Sort indicators
   document.querySelectorAll('thead th').forEach(th => {
