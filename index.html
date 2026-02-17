@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool Cost Dashboard — CODIR</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --pink: #FF4F9A;
+  --violet: #8B5CF6;
+  --yellow: #F6C026;
+  --mint: #34D399;
+  --blue: #3B82F6;
+  --coral: #FF6B6B;
+  --orange: #FB923C;
+  --bg: #FAF7F5;
+  --card: #FFFFFF;
+  --text: #1E1B2E;
+  --text-light: #6B6580;
+  --radius: 20px;
+  --shadow: 0 2px 16px rgba(30,27,46,0.07);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Memphis decorative shapes */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+}
+body::before {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+  top: -80px; right: -60px;
+}
+body::after {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,79,154,0.06) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+}
+
+.memphis-deco {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.10;
+}
+.memphis-tri {
+  width: 0; height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-bottom: 70px solid var(--yellow);
+  top: 180px; left: 40px;
+  transform: rotate(15deg);
+}
+.memphis-circle {
+  width: 60px; height: 60px;
+  border: 6px solid var(--coral);
+  border-radius: 50%;
+  top: 400px; right: 60px;
+}
+.memphis-zigzag {
+  top: 650px; left: 30px;
+  width: 80px; height: 30px;
+  background: repeating-linear-gradient(
+    90deg, var(--mint) 0px, var(--mint) 10px, transparent 10px, transparent 20px
+  );
+  transform: skewY(-8deg);
+}
+.memphis-cross {
+  top: 300px; right: 180px;
+  font-size: 60px; font-weight: 900; color: var(--violet);
+  line-height: 1;
+}
+.memphis-dots {
+  bottom: 200px; right: 100px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, var(--blue) 3px, transparent 3px);
+  background-size: 16px 16px;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.header h1 {
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--pink), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+.header-meta {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.header-meta .badge {
+  background: var(--card);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.badge .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* KPI Row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(30,27,46,0.12);
+}
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+}
+.kpi-card:nth-child(1)::after { background: linear-gradient(90deg, var(--pink), var(--coral)); }
+.kpi-card:nth-child(2)::after { background: linear-gradient(90deg, var(--violet), var(--blue)); }
+.kpi-card:nth-child(3)::after { background: linear-gradient(90deg, var(--yellow), var(--orange)); }
+.kpi-card:nth-child(4)::after { background: linear-gradient(90deg, var(--mint), var(--blue)); }
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.kpi-sub {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+/* Filter bar */
+.filter-bar {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.filter-group label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 2px solid #E5E0EB;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--violet); }
+.chip.active {
+  color: #fff;
+  border-color: transparent;
+}
+.chip.active[data-color="pink"] { background: var(--pink); }
+.chip.active[data-color="violet"] { background: var(--violet); }
+.chip.active[data-color="yellow"] { background: var(--yellow); color: var(--text); }
+.chip.active[data-color="mint"] { background: var(--mint); }
+.chip.active[data-color="blue"] { background: var(--blue); }
+.chip.active[data-color="coral"] { background: var(--coral); }
+.chip.active[data-color="orange"] { background: var(--orange); }
+.chip.active[data-color="all"] { background: var(--text); }
+.filter-reset {
+  margin-left: auto;
+  align-self: flex-end;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: none;
+  background: var(--bg);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.filter-reset:hover { background: #E5E0EB; }
+
+/* Bento Grid */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.bento-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+.bento-card:hover { transform: translateY(-2px); }
+.bento-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bento-card h3 .icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.chart-wrap {
+  position: relative;
+  max-width: 260px;
+  margin: 0 auto;
+}
+.chart-center-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+.chart-center-label .amount {
+  font-size: 1.3rem;
+  font-weight: 800;
+  display: block;
+}
+.chart-center-label .sub {
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+.legend-list {
+  margin-top: 18px;
+  list-style: none;
+}
+.legend-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #F3F0F7;
+}
+.legend-list li:last-child { border: none; }
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.legend-name {
+  flex: 1;
+  font-weight: 500;
+}
+.legend-value {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Span 2 for bar chart */
+.bento-wide { grid-column: span 2; }
+
+/* Table Section */
+.table-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.table-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.search-input {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 2px solid #E5E0EB;
+  font-family: inherit;
+  font-size: 0.82rem;
+  width: 260px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--violet); }
+
+.table-scroll { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+thead th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  border-bottom: 2px solid #F3F0F7;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+thead th:hover { color: var(--violet); }
+thead th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+thead th.sorted .sort-arrow { opacity: 1; color: var(--violet); }
+tbody tr {
+  border-bottom: 1px solid #F8F6FA;
+  transition: background 0.1s;
+}
+tbody tr:hover { background: #FAF7FF; }
+tbody td {
+  padding: 10px 12px;
+  white-space: nowrap;
+}
+.bu-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.bu-ms { background: #FFE4F0; color: #D6336C; }
+.bu-farly { background: #EDE4FF; color: #7C3AED; }
+.bu-story { background: #FFF7DB; color: #B8860B; }
+.bu-widely { background: #D5F5EC; color: #0D9F6E; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.72rem;
+  color: var(--text-light);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .bento { grid-template-columns: 1fr; }
+  .bento-wide { grid-column: span 1; }
+}
+@media (max-width: 640px) {
+  .container { padding: 16px; }
+  .kpi-row { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Memphis decorative shapes -->
+<div class="memphis-deco memphis-tri"></div>
+<div class="memphis-deco memphis-circle"></div>
+<div class="memphis-deco memphis-zigzag"></div>
+<div class="memphis-deco memphis-cross">+</div>
+<div class="memphis-deco memphis-dots"></div>
+
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <h1>Tool Cost Dashboard</h1>
+      <p style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">Suivi des coûts outils SaaS & Tech — CODIR</p>
+    </div>
+    <div class="header-meta">
+      <div class="badge"><span class="dot" style="background:var(--mint)"></span> 17 février 2026</div>
+      <div class="badge"><span class="dot" style="background:var(--yellow)"></span> 1 USD = 0.844 EUR</div>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Business Unit</label>
+      <div class="chips" id="bu-chips"></div>
+    </div>
+    <div class="filter-group">
+      <label>Équipe</label>
+      <div class="chips" id="team-chips"></div>
+    </div>
+    <button class="filter-reset" id="reset-filters">Réinitialiser</button>
+  </div>
+
+  <!-- Bento Charts -->
+  <div class="bento">
+    <!-- Donut BU -->
+    <div class="bento-card">
+      <h3><span class="icon" style="background:#FFE4F0;">🏢</span> Répartition par BU</h3>
+      <div class="chart-wrap">
+        <canvas id="chart-bu"></canvas>
+        <div class="chart-center-label">
+          <span class="amount" id="bu-center-amount"></span>
+          <span class="sub">Total annuel</span>
+        </div>
+      </div>
+      <ul class="legend-list" id="legend-bu"></ul>
+    </div>
+
+    <!-- Top 10 tools -->
+    <div class="bento-card">
+      <h3><span class="icon" style="background:#EDE4FF;">🏆</span> Top 10 outils par coût</h3>
+      <div class="chart-wrap">
+        <canvas id="chart-top10"></canvas>
+        <div class="chart-center-label">
+          <span class="amount" id="top10-center-amount"></span>
+          <span class="sub">Top 10</span>
+        </div>
+      </div>
+      <ul class="legend-list" id="legend-top10"></ul>
+    </div>
+
+    <!-- Donut Team -->
+    <div class="bento-card">
+      <h3><span class="icon" style="background:#D5F5EC;">👥</span> Répartition par équipe</h3>
+      <div class="chart-wrap">
+        <canvas id="chart-team"></canvas>
+        <div class="chart-center-label">
+          <span class="amount" id="team-center-amount"></span>
+          <span class="sub">Total</span>
+        </div>
+      </div>
+      <ul class="legend-list" id="legend-team"></ul>
+    </div>
+
+    <!-- Bar chart monthly vs yearly -->
+    <div class="bento-card bento-wide">
+      <h3><span class="icon" style="background:#FFF7DB;">📊</span> Monthly vs Yearly — par BU</h3>
+      <div style="max-height:320px;">
+        <canvas id="chart-bar"></canvas>
+      </div>
+    </div>
+
+    <!-- Coût par siège moyen par BU -->
+    <div class="bento-card">
+      <h3><span class="icon" style="background:#FFE4E4;">💺</span> Coût moyen / siège / an</h3>
+      <div style="max-height:320px;">
+        <canvas id="chart-seat"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section">
+    <div class="table-header">
+      <h3>📋 Détail de tous les outils</h3>
+      <input type="text" class="search-input" id="search" placeholder="Rechercher un outil...">
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-sort="name">Outil <span class="sort-arrow">↕</span></th>
+            <th data-sort="team">Équipe <span class="sort-arrow">↕</span></th>
+            <th data-sort="bu">BU <span class="sort-arrow">↕</span></th>
+            <th data-sort="renewal">Type <span class="sort-arrow">↕</span></th>
+            <th data-sort="seats">Sièges <span class="sort-arrow">↕</span></th>
+            <th data-sort="pricePerSeat">Prix/siège <span class="sort-arrow">↕</span></th>
+            <th data-sort="annualCost">Coût annuel (€) <span class="sort-arrow">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Dashboard généré le 17/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
+  </footer>
+</div>
+
+<script>
+// ==================== DATA ====================
+const USD_TO_EUR = 0.844;
+
+const rawTools = [
+  // MS Group
+  { name: "Slack", team: "All", bu: "MS group", price: 12.50, currency: "USD", renewal: "monthly", seats: 180 },
+  { name: "Google Workspace", team: "All", bu: "MS group", price: 14.40, currency: "USD", renewal: "monthly", seats: 180 },
+  { name: "Notion", team: "All", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 140 },
+  { name: "Figma", team: "Design", bu: "MS group", price: 15, currency: "USD", renewal: "monthly", seats: 22 },
+  { name: "Miro", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 35 },
+  { name: "Linear", team: "Engineering", bu: "MS group", price: 8, currency: "USD", renewal: "monthly", seats: 45 },
+  { name: "GitHub Enterprise", team: "Engineering", bu: "MS group", price: 21, currency: "USD", renewal: "monthly", seats: 48 },
+  { name: "Datadog", team: "Engineering", bu: "MS group", price: 23, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "AWS (infra)", team: "Engineering", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Vercel", team: "Engineering", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 15 },
+  { name: "HubSpot", team: "Marketing", bu: "MS group", price: 890, currency: "EUR", renewal: "monthly", seats: 12 },
+  { name: "Salesforce", team: "Sales", bu: "MS group", price: 75, currency: "EUR", renewal: "monthly", seats: 25 },
+  { name: "Zendesk", team: "Support", bu: "MS group", price: 55, currency: "EUR", renewal: "monthly", seats: 18 },
+  { name: "1Password", team: "All", bu: "MS group", price: 7.99, currency: "USD", renewal: "monthly", seats: 180 },
+  { name: "Loom", team: "All", bu: "MS group", price: 12.50, currency: "USD", renewal: "monthly", seats: 60 },
+  { name: "Zapier", team: "Ops", bu: "MS group", price: 599, currency: "USD", renewal: "monthly", seats: 1 },
+
+  // Farly
+  { name: "Slack", team: "All", bu: "Farly", price: 12.50, currency: "USD", renewal: "monthly", seats: 45 },
+  { name: "Google Workspace", team: "All", bu: "Farly", price: 14.40, currency: "USD", renewal: "monthly", seats: 45 },
+  { name: "Notion", team: "All", bu: "Farly", price: 10, currency: "USD", renewal: "monthly", seats: 40 },
+  { name: "Figma", team: "Design", bu: "Farly", price: 15, currency: "USD", renewal: "monthly", seats: 8 },
+  { name: "Linear", team: "Engineering", bu: "Farly", price: 8, currency: "USD", renewal: "monthly", seats: 18 },
+  { name: "GitHub Team", team: "Engineering", bu: "Farly", price: 4, currency: "USD", renewal: "monthly", seats: 18 },
+  { name: "Vercel", team: "Engineering", bu: "Farly", price: 20, currency: "USD", renewal: "monthly", seats: 5 },
+  { name: "AWS (infra)", team: "Engineering", bu: "Farly", price: 28000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Amplitude", team: "Product", bu: "Farly", price: 36000, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "Intercom", team: "Support", bu: "Farly", price: 74, currency: "USD", renewal: "monthly", seats: 8 },
+  { name: "Stripe (SaaS fee)", team: "Finance", bu: "Farly", price: 239, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Mixpanel", team: "Product", bu: "Farly", price: 834, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "SendGrid", team: "Engineering", bu: "Farly", price: 89, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Sentry", team: "Engineering", bu: "Farly", price: 26, currency: "USD", renewal: "monthly", seats: 12 },
+
+  // Story
+  { name: "Slack", team: "All", bu: "Story", price: 12.50, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "Google Workspace", team: "All", bu: "Story", price: 14.40, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "Notion", team: "All", bu: "Story", price: 10, currency: "USD", renewal: "monthly", seats: 28 },
+  { name: "Figma", team: "Design", bu: "Story", price: 15, currency: "USD", renewal: "monthly", seats: 6 },
+  { name: "Linear", team: "Engineering", bu: "Story", price: 8, currency: "USD", renewal: "monthly", seats: 14 },
+  { name: "GitHub Team", team: "Engineering", bu: "Story", price: 4, currency: "USD", renewal: "monthly", seats: 14 },
+  { name: "AWS (infra)", team: "Engineering", bu: "Story", price: 18000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Webflow", team: "Marketing", bu: "Story", price: 39, currency: "USD", renewal: "monthly", seats: 3 },
+  { name: "Mailchimp", team: "Marketing", bu: "Story", price: 350, currency: "USD", renewal: "monthly", seats: 1 },
+  { name: "Hotjar", team: "Product", bu: "Story", price: 80, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Airtable", team: "Ops", bu: "Story", price: 20, currency: "USD", renewal: "monthly", seats: 10 },
+  { name: "Calendly", team: "Sales", bu: "Story", price: 12, currency: "USD", renewal: "monthly", seats: 8 },
+  { name: "Typeform", team: "Marketing", bu: "Story", price: 59, currency: "EUR", renewal: "monthly", seats: 1 },
+  { name: "Canva Pro", team: "Design", bu: "Story", price: 12.99, currency: "EUR", renewal: "monthly", seats: 5 },
+  { name: "Sentry", team: "Engineering", bu: "Story", price: 26, currency: "USD", renewal: "monthly", seats: 8 },
+
+  // Widely
+  { name: "Slack", team: "All", bu: "Widely", price: 12.50, currency: "USD", renewal: "monthly", seats: 65 },
+  { name: "Google Workspace", team: "All", bu: "Widely", price: 14.40, currency: "USD", renewal: "monthly", seats: 65 },
+  { name: "Notion", team: "All", bu: "Widely", price: 10, currency: "USD", renewal: "monthly", seats: 55 },
+  { name: "Figma", team: "Design", bu: "Widely", price: 15, currency: "USD", renewal: "monthly", seats: 12 },
+  { name: "Linear", team: "Engineering", bu: "Widely", price: 8, currency: "USD", renewal: "monthly", seats: 28 },
+  { name: "GitHub Enterprise", team: "Engineering", bu: "Widely", price: 21, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "AWS (infra)", team: "Engineering", bu: "Widely", price: 42000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Snowflake", team: "Data", bu: "Widely", price: 7110, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Looker", team: "Data", bu: "Widely", price: 50000, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "dbt Cloud", team: "Data", bu: "Widely", price: 100, currency: "USD", renewal: "monthly", seats: 5 },
+  { name: "Segment", team: "Data", bu: "Widely", price: 12000, currency: "USD", renewal: "yearly", seats: 1 },
+  { name: "Braze", team: "Marketing", bu: "Widely", price: 60000, currency: "EUR", renewal: "yearly", seats: 1 },
+  { name: "Zendesk", team: "Support", bu: "Widely", price: 55, currency: "EUR", renewal: "monthly", seats: 22 },
+  { name: "Jira", team: "Engineering", bu: "Widely", price: 8.15, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "Confluence", team: "Engineering", bu: "Widely", price: 5.75, currency: "USD", renewal: "monthly", seats: 30 },
+  { name: "PagerDuty", team: "Engineering", bu: "Widely", price: 21, currency: "USD", renewal: "monthly", seats: 10 },
+  { name: "Postman", team: "Engineering", bu: "Widely", price: 14, currency: "USD", renewal: "monthly", seats: 15 },
+];
+
+// ==================== COMPUTE ====================
+function computeAnnualCostEUR(t) {
+  let cost;
+  if (t.renewal === 'monthly') {
+    cost = t.seats * t.price * 12;
+  } else {
+    cost = t.seats * t.price;
+  }
+  if (t.currency === 'USD') cost *= USD_TO_EUR;
+  return Math.round(cost);
+}
+
+const tools = rawTools.map(t => ({
+  ...t,
+  annualCost: computeAnnualCostEUR(t),
+  pricePerSeat: t.price
+}));
+
+const BU_LIST = ["MS group", "Farly", "Story", "Widely"];
+const TEAM_LIST = [...new Set(tools.map(t => t.team))].sort();
+
+const BU_COLORS = {
+  "MS group": "#FF4F9A",
+  "Farly": "#8B5CF6",
+  "Story": "#F6C026",
+  "Widely": "#34D399"
+};
+
+const TEAM_COLORS_LIST = ["#FF4F9A","#8B5CF6","#F6C026","#34D399","#3B82F6","#FF6B6B","#FB923C","#06B6D4","#A78BFA","#F472B6","#FBBF24","#4ADE80"];
+const TEAM_COLORS = {};
+TEAM_LIST.forEach((t, i) => { TEAM_COLORS[t] = TEAM_COLORS_LIST[i % TEAM_COLORS_LIST.length]; });
+
+const CHIP_COLORS_BU = { "MS group": "pink", "Farly": "violet", "Story": "yellow", "Widely": "mint" };
+const CHIP_COLORS_TEAM = {};
+const CHIP_C = ["blue","coral","orange","pink","violet","mint","yellow","blue","coral","orange","pink","violet"];
+TEAM_LIST.forEach((t, i) => { CHIP_COLORS_TEAM[t] = CHIP_C[i % CHIP_C.length]; });
+
+// ==================== STATE ====================
+let selectedBUs = new Set(BU_LIST);
+let selectedTeams = new Set(TEAM_LIST);
+let searchTerm = '';
+let sortCol = 'annualCost';
+let sortDir = -1;
+
+function getFiltered() {
+  return tools.filter(t =>
+    selectedBUs.has(t.bu) &&
+    selectedTeams.has(t.team) &&
+    (searchTerm === '' || t.name.toLowerCase().includes(searchTerm))
+  );
+}
+
+// ==================== FORMAT ====================
+function fmt(n) {
+  return n.toLocaleString('fr-FR') + ' €';
+}
+function fmtK(n) {
+  return n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'k €' : fmt(n);
+}
+
+// ==================== CHART INSTANCES ====================
+let chartBU, chartTop10, chartTeam, chartBar, chartSeat;
+
+const chartDefaults = {
+  cutout: '68%',
+  borderWidth: 2,
+  borderColor: '#FFFFFF',
+  hoverBorderWidth: 3,
+  hoverOffset: 6,
+};
+
+function makeDonutOptions(showTooltipEUR) {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1E1B2E',
+        titleFont: { family: 'Poppins', weight: '600' },
+        bodyFont: { family: 'Poppins' },
+        padding: 12,
+        cornerRadius: 10,
+        callbacks: showTooltipEUR ? {
+          label: ctx => ' ' + ctx.label + ': ' + fmt(ctx.parsed)
+        } : undefined
+      }
+    }
+  };
+}
+
+// ==================== RENDER ====================
+function render() {
+  const filtered = getFiltered();
+  const totalCost = filtered.reduce((s, t) => s + t.annualCost, 0);
+  const totalSeats = filtered.reduce((s, t) => s + t.seats, 0);
+  const nbTools = filtered.length;
+  const avgCost = nbTools ? Math.round(totalCost / nbTools) : 0;
+
+  // KPIs
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Coût total annuel</div>
+      <div class="kpi-value">${fmtK(totalCost)}</div>
+      <div class="kpi-sub">${filtered.filter(t=>t.renewal==='monthly').length} monthly / ${filtered.filter(t=>t.renewal==='yearly').length} yearly</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Nombre d'outils</div>
+      <div class="kpi-value">${nbTools}</div>
+      <div class="kpi-sub">${BU_LIST.filter(b=>selectedBUs.has(b)).length} BU sélectionnée${BU_LIST.filter(b=>selectedBUs.has(b)).length>1?'s':''}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total sièges</div>
+      <div class="kpi-value">${totalSeats.toLocaleString('fr-FR')}</div>
+      <div class="kpi-sub">Licences actives</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Coût moyen / outil</div>
+      <div class="kpi-value">${fmtK(avgCost)}</div>
+      <div class="kpi-sub">par an</div>
+    </div>
+  `;
+
+  // Donut BU
+  const buData = BU_LIST.map(b => filtered.filter(t => t.bu === b).reduce((s, t) => s + t.annualCost, 0));
+  const buColors = BU_LIST.map(b => BU_COLORS[b]);
+  document.getElementById('bu-center-amount').textContent = fmtK(totalCost);
+
+  if (chartBU) chartBU.destroy();
+  chartBU = new Chart(document.getElementById('chart-bu'), {
+    type: 'doughnut',
+    data: { labels: BU_LIST, datasets: [{ data: buData, backgroundColor: buColors, ...chartDefaults }] },
+    options: makeDonutOptions(true)
+  });
+
+  document.getElementById('legend-bu').innerHTML = BU_LIST.map((b, i) =>
+    `<li><span class="legend-dot" style="background:${buColors[i]}"></span><span class="legend-name">${b}</span><span class="legend-value">${fmtK(buData[i])}</span></li>`
+  ).join('');
+
+  // Top 10
+  const sorted = [...filtered].sort((a, b) => b.annualCost - a.annualCost);
+  const top10 = sorted.slice(0, 10);
+  const top10Labels = top10.map(t => t.name + (nbTools > 10 ? '' : ''));
+  const top10Data = top10.map(t => t.annualCost);
+  const top10Colors = ["#FF4F9A","#8B5CF6","#F6C026","#34D399","#3B82F6","#FF6B6B","#FB923C","#06B6D4","#A78BFA","#F472B6"];
+  const top10Total = top10Data.reduce((a, b) => a + b, 0);
+  document.getElementById('top10-center-amount').textContent = fmtK(top10Total);
+
+  if (chartTop10) chartTop10.destroy();
+  chartTop10 = new Chart(document.getElementById('chart-top10'), {
+    type: 'doughnut',
+    data: { labels: top10Labels, datasets: [{ data: top10Data, backgroundColor: top10Colors, ...chartDefaults }] },
+    options: makeDonutOptions(true)
+  });
+
+  document.getElementById('legend-top10').innerHTML = top10.map((t, i) =>
+    `<li><span class="legend-dot" style="background:${top10Colors[i]}"></span><span class="legend-name">${t.name} <span style="color:var(--text-light);font-weight:400;font-size:0.7rem">(${t.bu})</span></span><span class="legend-value">${fmtK(t.annualCost)}</span></li>`
+  ).join('');
+
+  // Donut Team
+  const teamData = TEAM_LIST.map(tm => filtered.filter(t => t.team === tm).reduce((s, t) => s + t.annualCost, 0)).filter((_, i) => {
+    return filtered.some(t => t.team === TEAM_LIST[i]);
+  });
+  const teamLabelsFiltered = TEAM_LIST.filter(tm => filtered.some(t => t.team === tm));
+  const teamColorsFiltered = teamLabelsFiltered.map(t => TEAM_COLORS[t]);
+  const teamTotal = teamData.reduce((a, b) => a + b, 0);
+  document.getElementById('team-center-amount').textContent = fmtK(teamTotal);
+
+  if (chartTeam) chartTeam.destroy();
+  chartTeam = new Chart(document.getElementById('chart-team'), {
+    type: 'doughnut',
+    data: { labels: teamLabelsFiltered, datasets: [{ data: teamData, backgroundColor: teamColorsFiltered, ...chartDefaults }] },
+    options: makeDonutOptions(true)
+  });
+
+  document.getElementById('legend-team').innerHTML = teamLabelsFiltered.map((tm, i) =>
+    `<li><span class="legend-dot" style="background:${teamColorsFiltered[i]}"></span><span class="legend-name">${tm}</span><span class="legend-value">${fmtK(teamData[i])}</span></li>`
+  ).join('');
+
+  // Bar chart Monthly vs Yearly per BU
+  const monthlyByBU = BU_LIST.map(b => filtered.filter(t => t.bu === b && t.renewal === 'monthly').reduce((s, t) => s + t.annualCost, 0));
+  const yearlyByBU = BU_LIST.map(b => filtered.filter(t => t.bu === b && t.renewal === 'yearly').reduce((s, t) => s + t.annualCost, 0));
+
+  if (chartBar) chartBar.destroy();
+  chartBar = new Chart(document.getElementById('chart-bar'), {
+    type: 'bar',
+    data: {
+      labels: BU_LIST,
+      datasets: [
+        { label: 'Monthly (annualisé)', data: monthlyByBU, backgroundColor: '#8B5CF6', borderRadius: 8 },
+        { label: 'Yearly', data: yearlyByBU, backgroundColor: '#F6C026', borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Poppins', weight: '600', size: 11 }, usePointStyle: true, pointStyle: 'rectRounded' } },
+        tooltip: {
+          backgroundColor: '#1E1B2E',
+          titleFont: { family: 'Poppins', weight: '600' },
+          bodyFont: { family: 'Poppins' },
+          padding: 12, cornerRadius: 10,
+          callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#F3F0F7' }, ticks: { font: { family: 'Poppins', size: 11 }, callback: v => fmtK(v) } },
+        x: { grid: { display: false }, ticks: { font: { family: 'Poppins', weight: '600', size: 11 } } }
+      }
+    }
+  });
+
+  // Seat cost chart
+  const seatCostByBU = BU_LIST.map(b => {
+    const buTools = filtered.filter(t => t.bu === b && t.seats > 1);
+    const totalC = buTools.reduce((s, t) => s + t.annualCost, 0);
+    const totalS = buTools.reduce((s, t) => s + t.seats, 0);
+    return totalS ? Math.round(totalC / totalS) : 0;
+  });
+
+  if (chartSeat) chartSeat.destroy();
+  chartSeat = new Chart(document.getElementById('chart-seat'), {
+    type: 'bar',
+    data: {
+      labels: BU_LIST,
+      datasets: [{ label: '€ / siège / an', data: seatCostByBU, backgroundColor: BU_LIST.map(b => BU_COLORS[b]), borderRadius: 8 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1E1B2E',
+          titleFont: { family: 'Poppins', weight: '600' },
+          bodyFont: { family: 'Poppins' },
+          padding: 12, cornerRadius: 10,
+          callbacks: { label: ctx => ' ' + fmt(ctx.parsed.x) + ' / siège / an' }
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#F3F0F7' }, ticks: { font: { family: 'Poppins', size: 11 }, callback: v => v + ' €' } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Poppins', weight: '600', size: 11 } } }
+      }
+    }
+  });
+
+  // Table
+  const BU_TAG_CLASS = { "MS group": "bu-ms", "Farly": "bu-farly", "Story": "bu-story", "Widely": "bu-widely" };
+  const tableSorted = [...filtered].sort((a, b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    return va < vb ? -sortDir : va > vb ? sortDir : 0;
+  });
+
+  document.getElementById('table-body').innerHTML = tableSorted.map(t => `
+    <tr>
+      <td style="font-weight:600">${t.name}</td>
+      <td>${t.team}</td>
+      <td><span class="bu-tag ${BU_TAG_CLASS[t.bu]}">${t.bu}</span></td>
+      <td>${t.renewal}</td>
+      <td>${t.seats}</td>
+      <td>${t.price.toLocaleString('fr-FR')} ${t.currency === 'USD' ? '$' : '€'}</td>
+      <td style="font-weight:700">${fmt(t.annualCost)}</td>
+    </tr>
+  `).join('');
+
+  // Sort indicators
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.sort === sortCol);
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = th.dataset.sort === sortCol ? (sortDir === 1 ? '↑' : '↓') : '↕';
+  });
+}
+
+// ==================== CHIPS ====================
+function renderChips() {
+  const buChips = document.getElementById('bu-chips');
+  buChips.innerHTML = `<button class="chip ${selectedBUs.size === BU_LIST.length ? 'active' : ''}" data-color="all" data-bu="__all__">Toutes</button>` +
+    BU_LIST.map(b => `<button class="chip ${selectedBUs.has(b) ? 'active' : ''}" data-color="${CHIP_COLORS_BU[b]}" data-bu="${b}">${b}</button>`).join('');
+
+  const teamChips = document.getElementById('team-chips');
+  teamChips.innerHTML = `<button class="chip ${selectedTeams.size === TEAM_LIST.length ? 'active' : ''}" data-color="all" data-team="__all__">Toutes</button>` +
+    TEAM_LIST.map(t => `<button class="chip ${selectedTeams.has(t) ? 'active' : ''}" data-color="${CHIP_COLORS_TEAM[t]}" data-team="${t}">${t}</button>`).join('');
+}
+
+document.getElementById('bu-chips').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  const bu = btn.dataset.bu;
+  if (bu === '__all__') {
+    selectedBUs = new Set(BU_LIST);
+  } else {
+    if (selectedBUs.size === BU_LIST.length) {
+      selectedBUs = new Set([bu]);
+    } else if (selectedBUs.has(bu)) {
+      selectedBUs.delete(bu);
+      if (selectedBUs.size === 0) selectedBUs = new Set(BU_LIST);
+    } else {
+      selectedBUs.add(bu);
+    }
+  }
+  renderChips();
+  render();
+});
+
+document.getElementById('team-chips').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  const team = btn.dataset.team;
+  if (team === '__all__') {
+    selectedTeams = new Set(TEAM_LIST);
+  } else {
+    if (selectedTeams.size === TEAM_LIST.length) {
+      selectedTeams = new Set([team]);
+    } else if (selectedTeams.has(team)) {
+      selectedTeams.delete(team);
+      if (selectedTeams.size === 0) selectedTeams = new Set(TEAM_LIST);
+    } else {
+      selectedTeams.add(team);
+    }
+  }
+  renderChips();
+  render();
+});
+
+document.getElementById('reset-filters').addEventListener('click', () => {
+  selectedBUs = new Set(BU_LIST);
+  selectedTeams = new Set(TEAM_LIST);
+  searchTerm = '';
+  document.getElementById('search').value = '';
+  renderChips();
+  render();
+});
+
+// Search
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  render();
+});
+
+// Table sort
+document.querySelector('thead').addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (!th || !th.dataset.sort) return;
+  if (sortCol === th.dataset.sort) {
+    sortDir *= -1;
+  } else {
+    sortCol = th.dataset.sort;
+    sortDir = th.dataset.sort === 'annualCost' || th.dataset.sort === 'seats' || th.dataset.sort === 'pricePerSeat' ? -1 : 1;
+  }
+  render();
+});
+
+// ==================== INIT ====================
+renderChips();
+render();
+</script>
+</body>
+</html>
