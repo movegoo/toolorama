@@ -566,12 +566,6 @@ tbody td {
   <!-- KPIs -->
   <div class="kpi-row" id="kpi-row"></div>
 
-  <!-- Alertes renouvellement -->
-  <div class="alert-section" id="alert-section" style="display:none;">
-    <h3><span class="icon">⚠️</span> Alertes renouvellement</h3>
-    <div class="alert-cards" id="alert-cards"></div>
-  </div>
-
   <!-- Filters -->
   <div class="filter-bar">
     <div class="filter-group">
@@ -665,6 +659,12 @@ tbody td {
         <tbody id="table-body"></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- Alertes renouvellement -->
+  <div class="alert-section" id="alert-section" style="display:none;">
+    <h3><span class="icon">⚠️</span> Alertes renouvellement — Yearly</h3>
+    <div class="alert-cards" id="alert-cards"></div>
   </div>
 
   <footer class="footer">
@@ -1157,7 +1157,7 @@ function renderAlerts() {
   past60.setDate(past60.getDate() - 60);
 
   const alertTools = rawTools
-    .filter(t => !t.excluded && t.renewalDate)
+    .filter(t => !t.excluded && t.renewalDate && t.renewal === 'yearly')
     .map(t => {
       const rd = new Date(t.renewalDate);
       const diffMs = rd - today;
