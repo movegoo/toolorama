@@ -757,7 +757,7 @@ const rawTools = [
   { name: "Filestage", team: "Créa, Vidéo", bu: "Story", price: 158, currency: "EUR", renewal: "yearly", seats: 47, renewalDate: "2026-05-01" },
   { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-01-31" },
   { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total" },
-  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 8205.47, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-03-31", note: "Prix total" },
   { name: "ChatGPT (duplicate)", team: "Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "NC — doublon probable" },
   { name: "Pitch", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
   { name: "Sharepoint", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
@@ -781,6 +781,8 @@ function computeAnnualCostEUR(t) {
   let cost;
   if (t.renewal === 'monthly') {
     cost = t.seats * t.price * 12;
+  } else if (t.renewal === 'quarterly') {
+    cost = t.seats * t.price * 4;
   } else {
     cost = t.seats * t.price;
   }
@@ -904,7 +906,7 @@ function render() {
     <div class="kpi-card">
       <div class="kpi-label">Coût total annuel</div>
       <div class="kpi-value">${fmtK(totalCost)}</div>
-      <div class="kpi-sub">${filtered.filter(t=>t.renewal==='monthly').length} monthly / ${filtered.filter(t=>t.renewal==='yearly').length} yearly</div>
+      <div class="kpi-sub">${filtered.filter(t=>t.renewal==='monthly').length} monthly${filtered.filter(t=>t.renewal==='quarterly').length ? ' / ' + filtered.filter(t=>t.renewal==='quarterly').length + ' quarterly' : ''} / ${filtered.filter(t=>t.renewal==='yearly').length} yearly</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Nombre d'outils</div>
