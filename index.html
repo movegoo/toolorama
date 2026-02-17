@@ -586,7 +586,7 @@ tbody td {
   <header class="header">
     <div>
       <h1>Tool Cost Dashboard</h1>
-      <p style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">Suivi des coûts outils SaaS & Tech — CODIR</p>
+      <p style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">Suivi des coûts outils SaaS & Tech</p>
     </div>
     <div class="header-meta">
       <div class="badge"><span class="dot" style="background:var(--mint)"></span> 17 février 2026</div>
@@ -685,6 +685,8 @@ tbody td {
             <th data-sort="seats">Sièges <span class="sort-arrow">↕</span></th>
             <th data-sort="pricePerSeat">Prix/siège <span class="sort-arrow">↕</span></th>
             <th data-sort="annualCost">Coût annuel (€) <span class="sort-arrow">↕</span></th>
+            <th>Admin</th>
+            <th>Lien</th>
           </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -710,70 +712,70 @@ const USD_TO_EUR = 0.844;
 // Real data from Google Sheet (snapshot 17/02/2026)
 // Entries with "NC", "Je ne connais pas", or unknown pricing are flagged excluded=true
 const rawTools = [
-  { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27, renewalDate: "2026-02-16" },
-  { name: "Cursor", team: "Tech", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-23" },
-  { name: "Cursor", team: "Tech", bu: "MS group", price: 24, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-23", note: "Vincent" },
-  { name: "Creatify", team: "Adops", bu: "Farly", price: 39, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-17" },
-  { name: "Cursor", team: "Tech", bu: "MS group", price: 60, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-01-03", note: "Nicolas" },
-  { name: "Copilot", team: "Tech", bu: "MS group", price: 39, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-01-01" },
-  { name: "Apptweak", team: "Media Buying & UA, Adops", bu: "Farly", price: 249, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-02" },
-  { name: "Notion", team: "All", bu: "MS group", price: 0, currency: "EUR", renewal: "monthly", seats: 174 },
-  { name: "Notion (pages publiques)", team: "All", bu: "MS group", price: 23.5, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-06" },
-  { name: "Pandadoc", team: "Sales", bu: "Widely", price: 1868, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2026-07-04" },
-  { name: "Copilot", team: "Tech", bu: "MS group", price: 21.6, currency: "EUR", renewal: "monthly", seats: 4 },
-  { name: "Copilot", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 5 },
-  { name: "Pycharm", team: "Tech", bu: "MS group", price: 300, currency: "EUR", renewal: "yearly", seats: 2 },
-  { name: "DataGrip", team: "Tech", bu: "MS group", price: 259, currency: "EUR", renewal: "yearly", seats: 1 },
-  { name: "NordVPN", team: "Ops/Products, Publisher, AM", bu: "Farly", price: 195, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2027-01-29" },
-  { name: "NordPass", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 83, currency: "USD", renewal: "yearly", seats: 24, renewalDate: "2026-10-28" },
-  { name: "Timetastic", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1.5, currency: "USD", renewal: "monthly", seats: 22 },
-  { name: "24Metrics", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1400, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Docusign", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2026-11-01" },
-  { name: "Everflow", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 9500, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Affilitest", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 99, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Keyword Tool", team: "Conseil", bu: "Story", price: 190, currency: "EUR", renewal: "yearly", seats: 5, renewalDate: "2027-01-22" },
-  { name: "Social Insider", team: "Conseil", bu: "Story", price: 3500, currency: "USD", renewal: "yearly", seats: 5, renewalDate: "2026-02-26" },
-  { name: "Cursor", team: "Créa - Ad content", bu: "Story", price: 20, currency: "USD", renewal: "monthly", seats: 3 },
-  { name: "Gamma", team: "Partners", bu: "MS group", price: 24, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-28" },
-  { name: "ChatGPT", team: "All", bu: "MS group", price: 30, currency: "USD", renewal: "monthly", seats: 22, renewalDate: "2026-03-30" },
-  { name: "PhantomBuster", team: "Sales, Marketing", bu: "MS group", price: 69, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-25" },
-  { name: "Scrape Creators", team: "Product, Vidéo", bu: "MS group", price: 49, currency: "USD", renewal: "monthly", seats: 1 },
-  { name: "Submagic", team: "Vidéo", bu: "Story", price: 1104, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-09-23" },
-  { name: "Artlist", team: "Vidéo", bu: "Story", price: 575, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-17" },
-  { name: "Envato", team: "Vidéo", bu: "Story", price: 39, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-01" },
-  { name: "iStock", team: "Édito", bu: "Story", price: 1758.9, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-06-17" },
-  { name: "Signaturit", team: "RH / Admin", bu: "MS group", price: 330, currency: "EUR", renewal: "yearly", seats: 3, renewalDate: "2026-02-27" },
-  { name: "Screenful", team: "Tech, Product", bu: "MS group", price: 141, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-28" },
-  { name: "Figma", team: "Créa - digital/Ad content", bu: "Story", price: 20, currency: "EUR", renewal: "monthly", seats: 25, renewalDate: "2026-02-19" },
-  { name: "Overlord 2", team: "Créa - Ad content", bu: "Story", price: 70, currency: "USD", renewal: "yearly", seats: 3, renewalDate: "2026-01-07" },
-  { name: "Envato Elements", team: "Créa - digital/Ad content", bu: "Story", price: 46.8, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-01" },
-  { name: "Jimo", team: "Product", bu: "MS group", price: 480, currency: "EUR", renewal: "yearly", seats: 15, renewalDate: "2026-07-19" },
-  { name: "Figma", team: "Product", bu: "MS group", price: 600, currency: "USD", renewal: "yearly", seats: 6, renewalDate: "2027-01-04" },
-  { name: "Linear", team: "Tech, Product", bu: "MS group", price: 360, currency: "USD", renewal: "yearly", seats: 39, renewalDate: "2026-11-04" },
-  { name: "IntelliJ", team: "Tech", bu: "MS group", price: 240, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2027-02-01" },
-  { name: "Supermetrics", team: "Media Buying & UA, Conseil", bu: "Story", price: 1596, currency: "EUR", renewal: "yearly", seats: 3, renewalDate: "2026-02-18" },
-  { name: "Adobe", team: "Créa, Vidéo", bu: "Story", price: 0, currency: "EUR", renewal: "yearly", seats: 28, excluded: true, note: "Prix enterprise inconnu" },
-  { name: "Pitch", team: "All", bu: "MS group", price: 204, currency: "EUR", renewal: "yearly", seats: 82, renewalDate: "2026-01-12" },
-  { name: "Filestage", team: "Sales, Adops, Conseil, Marketing, Partners, Créa - digital content, Créa - Ad content", bu: "Story", price: 13416, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-08-28", note: "Prix total, 33 sièges" },
-  { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-01-31" },
-  { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total" },
-  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 8205.47, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-28", note: "Prix total" },
+  { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27, renewalDate: "2026-02-16", admin: "chloe.pelletier@mobsuccess.com", url: "https://miro.com/" },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-23", admin: "nicolas.otmani@mobsuccess.com", url: "https://cursor.com/dashboard?tab=billing" },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 24, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-23", admin: "nicolas.otmani@mobsuccess.com", url: "https://cursor.com/dashboard?tab=billing", note: "Vincent" },
+  { name: "Creatify", team: "Adops", bu: "Farly", price: 39, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-17", admin: "Acquisition@farly.io", url: "https://app.creatify.ai/" },
+  { name: "Cursor", team: "Tech", bu: "MS group", price: 60, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-01-03", admin: "nicolas.otmani@mobsuccess.com", url: "https://cursor.com/dashboard?tab=billing", note: "Nicolas" },
+  { name: "Copilot", team: "Tech", bu: "MS group", price: 39, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-01-01", admin: "christopher.allene@mobsuccess.com", url: "https://github.com/enterprises/mobsuccess/billing" },
+  { name: "Apptweak", team: "Media Buying & UA, Adops", bu: "Farly", price: 249, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-02", admin: "acquisition@farly.io", url: "https://app.apptweak.com/" },
+  { name: "Notion", team: "All", bu: "MS group", price: 0, currency: "EUR", renewal: "monthly", seats: 174, admin: "chloe.pelletier@mobsuccess.com", url: "https://notion.com/" },
+  { name: "Notion (pages publiques)", team: "All", bu: "MS group", price: 23.5, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-06", admin: "chloe.pelletier@mobsuccess.com", url: "https://notion.com/" },
+  { name: "Pandadoc", team: "Sales", bu: "Widely", price: 1868, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2026-07-04", admin: "sales@mobsuccess.com", url: "https://app.pandadoc.com/a/#/settings/billing" },
+  { name: "Copilot", team: "Tech", bu: "MS group", price: 21.6, currency: "EUR", renewal: "monthly", seats: 4, admin: "antoine.hinge@mobsuccess.com", url: "https://github.com/" },
+  { name: "Copilot", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 5, admin: "antoine.hinge@mobsuccess.com", url: "https://github.com/" },
+  { name: "Pycharm", team: "Tech", bu: "MS group", price: 300, currency: "EUR", renewal: "yearly", seats: 2, admin: "antoine.hinge@mobsuccess.com", url: "https://jetbrains.com/" },
+  { name: "DataGrip", team: "Tech", bu: "MS group", price: 259, currency: "EUR", renewal: "yearly", seats: 1, admin: "antoine.hinge@mobsuccess.com", url: "https://jetbrains.com/" },
+  { name: "NordVPN", team: "Ops/Products, Publisher, AM", bu: "Farly", price: 195, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2027-01-29", admin: "acquisition@farly.io", url: "https://nordvpn.com/" },
+  { name: "NordPass", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 83, currency: "USD", renewal: "yearly", seats: 24, renewalDate: "2026-10-28", admin: "individual emails", url: "https://nordpass.com/" },
+  { name: "Timetastic", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1.5, currency: "USD", renewal: "monthly", seats: 22, admin: "individual emails", url: "https://app.timetastic.co.uk/" },
+  { name: "24Metrics", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1400, currency: "USD", renewal: "monthly", seats: 1, admin: "rewarded@farly.io", url: "https://www.24metrics.com/" },
+  { name: "Docusign", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 1, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2026-11-01", admin: "sales@farly.io", url: "https://account.docusign.com/" },
+  { name: "Everflow", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 9500, currency: "USD", renewal: "monthly", seats: 1, admin: "individual emails", url: "https://farly.everflowclient.io/" },
+  { name: "Affilitest", team: "Ops/Products, Publisher, AM, Sales", bu: "Farly", price: 99, currency: "USD", renewal: "monthly", seats: 1, admin: "support@farly.io", url: "https://affilitest.com/" },
+  { name: "Keyword Tool", team: "Conseil", bu: "Story", price: 190, currency: "EUR", renewal: "yearly", seats: 5, renewalDate: "2027-01-22", admin: "ken.tan@storysuccess.fr", url: "https://keywordtool.io/" },
+  { name: "Social Insider", team: "Conseil", bu: "Story", price: 3500, currency: "USD", renewal: "yearly", seats: 5, renewalDate: "2026-02-26", admin: "ken.tan@storysuccess.fr", url: "https://www.socialinsider.io/" },
+  { name: "Cursor", team: "Créa - Ad content", bu: "Story", price: 20, currency: "USD", renewal: "monthly", seats: 3, admin: "julie.midon@storysuccess.fr", url: "https://cursor.com/" },
+  { name: "Gamma", team: "Partners", bu: "MS group", price: 24, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-28", admin: "romain.girard@mobsuccess.com", url: "https://gamma.app/" },
+  { name: "ChatGPT", team: "All", bu: "MS group", price: 30, currency: "USD", renewal: "monthly", seats: 22, renewalDate: "2026-03-30", admin: "ahmat.faki@mobsuccess.com", url: "https://chatgpt.com/" },
+  { name: "PhantomBuster", team: "Sales, Marketing", bu: "MS group", price: 69, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-25", admin: "jeremy.fort@mobsuccess.com", url: "https://phantombuster.com/" },
+  { name: "Scrape Creators", team: "Product, Vidéo", bu: "MS group", price: 49, currency: "USD", renewal: "monthly", seats: 1, admin: "ahmat.faki@mobsuccess.com", url: "https://app.scrapecreators.com/" },
+  { name: "Submagic", team: "Vidéo", bu: "Story", price: 1104, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-09-23", admin: "morgane.derrien@storysuccess.fr", url: "https://app.submagic.co/" },
+  { name: "Artlist", team: "Vidéo", bu: "Story", price: 575, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-17", admin: "melissa.abrini@storysuccess.fr", url: "https://artlist.io/" },
+  { name: "Envato", team: "Vidéo", bu: "Story", price: 39, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-01", admin: "vincent.ribe-puig@storysuccess.fr", url: "https://app.envato.com/" },
+  { name: "iStock", team: "Édito", bu: "Story", price: 1758.9, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-06-17", admin: "quentin.sellier@storysuccess.fr", url: "https://www.istockphoto.com/fr" },
+  { name: "Signaturit", team: "RH / Admin", bu: "MS group", price: 330, currency: "EUR", renewal: "yearly", seats: 3, renewalDate: "2026-02-27", admin: "jessica.lessinger@mobsuccess.com", url: "https://www.signaturit.com/" },
+  { name: "Screenful", team: "Tech, Product", bu: "MS group", price: 141, currency: "USD", renewal: "monthly", seats: 1, renewalDate: "2026-02-28", admin: "chloe.pelletier@mobsuccess.com", url: "https://app.screenful.me/" },
+  { name: "Figma", team: "Créa - digital/Ad content", bu: "Story", price: 20, currency: "EUR", renewal: "monthly", seats: 25, renewalDate: "2026-02-19", admin: "vincent.ribe-puig@storysuccess.fr", url: "https://www.figma.com/" },
+  { name: "Overlord 2", team: "Créa - Ad content", bu: "Story", price: 70, currency: "USD", renewal: "yearly", seats: 3, renewalDate: "2026-01-07", admin: "vincent.ribe-puig@storysuccess.fr", url: "https://battleaxe.co/overlord" },
+  { name: "Envato Elements", team: "Créa - digital/Ad content", bu: "Story", price: 46.8, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-02-01", admin: "vincent.ribe-puig@storysuccess.fr", url: "https://app.envato.com/" },
+  { name: "Jimo", team: "Product", bu: "MS group", price: 480, currency: "EUR", renewal: "yearly", seats: 15, renewalDate: "2026-07-19", admin: "chloe.pelletier@mobsuccess.com", url: "https://i.usejimo.com/settings/billing" },
+  { name: "Figma", team: "Product", bu: "MS group", price: 600, currency: "USD", renewal: "yearly", seats: 6, renewalDate: "2027-01-04", admin: "chloe.pelletier@mobsuccess.com", url: "https://www.figma.com/" },
+  { name: "Linear", team: "Tech, Product", bu: "MS group", price: 360, currency: "USD", renewal: "yearly", seats: 39, renewalDate: "2026-11-04", admin: "chloe.pelletier@mobsuccess.com", url: "https://linear.app/" },
+  { name: "IntelliJ", team: "Tech", bu: "MS group", price: 240, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2027-02-01", admin: "florent.sorel@mobsuccess.com", url: "https://www.jetbrains.com/idea/" },
+  { name: "Supermetrics", team: "Media Buying & UA, Conseil", bu: "Story", price: 1596, currency: "EUR", renewal: "yearly", seats: 3, renewalDate: "2026-02-18", admin: "eloah.vanhoucke@storysuccess.fr", url: "https://hub.supermetrics.com/" },
+  { name: "Adobe", team: "Créa, Vidéo", bu: "Story", price: 0, currency: "EUR", renewal: "yearly", seats: 28, excluded: true, note: "Prix enterprise inconnu", admin: "jessica@successfuel.io", url: "https://adminconsole.adobe.com/" },
+  { name: "Pitch", team: "All", bu: "MS group", price: 204, currency: "EUR", renewal: "yearly", seats: 82, renewalDate: "2026-01-12", admin: "eloah.vanhoucke@storysuccess.fr", url: "https://app.pitch.com/" },
+  { name: "Filestage", team: "Sales, Adops, Conseil, Marketing, Partners, Créa - digital content, Créa - Ad content", bu: "Story", price: 13416, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-08-28", note: "Prix total, 33 sièges", admin: "melissa.abrini@storysuccess.fr", url: "https://filestage.io/" },
+  { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-01-31", admin: "alexandre.binjamin@mobsuccess.com", url: "https://claude.ai/" },
+  { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total", admin: "nicolas.tarricone@yougov.com", url: "https://platform.yougov.com/" },
+  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 8205.47, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-28", note: "Prix total", url: "https://www.hubspot.fr/" },
   { name: "ChatGPT (duplicate)", team: "Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "NC — doublon probable" },
   { name: "Pitch", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
   { name: "Sharepoint", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
   { name: "Monday", team: "Adops, Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
-  { name: "Apollo.io", team: "Sales", bu: "Farly", price: 0, currency: "EUR", renewal: "monthly", seats: 1 },
-  { name: "Crowdin", team: "Product", bu: "MS group", price: 1595, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-01" },
-  { name: "Pennylane", team: "Finances", bu: "MS group", price: 12000, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-28" },
-  { name: "LinkedIn Sales Nav", team: "Sales", bu: "MS group", price: 13000, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-31" },
-  { name: "Monday", team: "All", bu: "Story", price: 192, currency: "USD", renewal: "yearly", seats: 87, renewalDate: "2027-12-05" },
-  { name: "Crisp", team: "Tech, Product", bu: "Story", price: 95, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-01" },
-  { name: "Quicksight", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
-  { name: "Monday", team: "Adops", bu: "Widely", price: 19, currency: "EUR", renewal: "monthly", seats: 16 },
-  { name: "ChatGPT", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Apollo.io", team: "Sales", bu: "Farly", price: 0, currency: "EUR", renewal: "monthly", seats: 1, admin: "samira.latoui@mobsuccess.com", url: "https://app.apollo.io/" },
+  { name: "Crowdin", team: "Product", bu: "MS group", price: 1595, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-01", admin: "philippe.auriach@mobsuccess.com", url: "https://crowdin.com/" },
+  { name: "Pennylane", team: "Finances", bu: "MS group", price: 12000, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-28", admin: "clement.nogues@mobsuccess.com", url: "https://app.pennylane.com/" },
+  { name: "LinkedIn Sales Nav", team: "Sales", bu: "MS group", price: 13000, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-31", admin: "xavier.dupont@mobsuccess.com", url: "https://business.linkedin.com/sales-solutions/sales-navigator" },
+  { name: "Monday", team: "All", bu: "Story", price: 192, currency: "USD", renewal: "yearly", seats: 87, renewalDate: "2027-12-05", admin: "ken.tan@storysuccess.fr", url: "https://storysuccess.monday.com/" },
+  { name: "Crisp", team: "Tech, Product", bu: "Story", price: 95, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-01", admin: "chloe.pelletier@mobsuccess.com", url: "https://app.crisp.chat/" },
+  { name: "Quicksight", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com", url: "https://eu-central-1.quicksight.aws.amazon.com/" },
+  { name: "Monday", team: "Adops", bu: "Widely", price: 19, currency: "EUR", renewal: "monthly", seats: 16, admin: "yannis.echchelh@mobsuccess.com", url: "https://storysuccess.monday.com/" },
+  { name: "ChatGPT", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com", url: "https://chatgpt.com/" },
   { name: "Filestage", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu" },
-  { name: "Microsoft Office", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
-  { name: "Notion", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu" },
+  { name: "Microsoft Office", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com" },
+  { name: "Notion", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com" },
 ];
 
 // ==================== COMPUTE ====================
@@ -1074,6 +1076,8 @@ function render() {
       <td>${t.seats || 'NC'}</td>
       <td>${priceDisplay}</td>
       <td style="font-weight:700">${costDisplay}</td>
+      <td style="font-size:0.72rem">${t.admin ? '<a href="mailto:'+t.admin+'" style="color:var(--violet);text-decoration:none" title="'+t.admin+'">'+t.admin.split('@')[0]+'</a>' : ''}</td>
+      <td>${t.url ? '<a href="'+t.url+'" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;font-size:0.75rem" title="'+t.url+'">Ouvrir</a>' : ''}</td>
     </tr>`;
   }).join('');
 
@@ -1319,6 +1323,7 @@ function renderAlerts() {
           <div class="tool-info">
             <div class="tool-name">${t.name}</div>
             <div class="tool-meta">${t.bu} · ${t.team.split(',')[0].trim()} · ${dateStr}</div>
+            <div class="tool-meta">${t.admin ? '👤 <a href="mailto:'+t.admin+'" style="color:var(--violet);text-decoration:none">'+t.admin+'</a>' : ''}${t.url ? ' · <a href="'+t.url+'" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none">Gérer l\'abo</a>' : ''}</div>
           </div>
           <div class="tool-cost">${fmt(t.annualCost)}/an</div>
         </div>
