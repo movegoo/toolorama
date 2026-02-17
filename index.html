@@ -190,6 +190,33 @@ body::after {
 }
 
 /* Filter bar */
+.filter-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.filter-toggle {
+  background: var(--card);
+  border: 1.5px solid #E5E0EB;
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+.filter-toggle:hover { border-color: var(--violet); color: var(--violet); }
+.filter-toggle.open { background: var(--violet); color: #fff; border-color: var(--violet); }
+.filter-summary {
+  font-size: 0.72rem;
+  color: var(--text-light);
+}
 .filter-bar {
   background: var(--card);
   border-radius: var(--radius);
@@ -603,7 +630,11 @@ tbody td {
   <div class="kpi-row" id="kpi-row"></div>
 
   <!-- Filters -->
-  <div class="filter-bar">
+  <div class="filter-toggle-row">
+    <button class="filter-toggle" id="filter-toggle">Filtres <span id="filter-arrow">▸</span></button>
+    <span class="filter-summary" id="filter-summary"></span>
+  </div>
+  <div class="filter-bar" id="filter-bar" style="display:none;">
     <div class="filter-group">
       <label>BU</label>
       <div class="chips" id="bu-chips"></div>
@@ -1124,6 +1155,7 @@ document.getElementById('bu-chips').addEventListener('click', e => {
   }
   renderChips();
   render();
+  updateFilterSummary();
 });
 
 document.getElementById('team-chips').addEventListener('click', e => {
@@ -1144,7 +1176,33 @@ document.getElementById('team-chips').addEventListener('click', e => {
   }
   renderChips();
   render();
+  updateFilterSummary();
 });
+
+// Filter toggle
+document.getElementById('filter-toggle').addEventListener('click', () => {
+  const bar = document.getElementById('filter-bar');
+  const btn = document.getElementById('filter-toggle');
+  const arrow = document.getElementById('filter-arrow');
+  const isOpen = bar.style.display !== 'none';
+  bar.style.display = isOpen ? 'none' : 'flex';
+  btn.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▸' : '▾';
+});
+
+function updateFilterSummary() {
+  const summary = document.getElementById('filter-summary');
+  const allBU = selectedBUs.size === BU_LIST.length;
+  const allTeams = selectedTeams.size === TEAM_LIST.length;
+  if (allBU && allTeams) {
+    summary.textContent = '';
+  } else {
+    const parts = [];
+    if (!allBU) parts.push(Array.from(selectedBUs).join(', '));
+    if (!allTeams) parts.push(Array.from(selectedTeams).join(', '));
+    summary.textContent = parts.join(' · ');
+  }
+}
 
 document.getElementById('reset-filters').addEventListener('click', () => {
   selectedBUs = new Set(BU_LIST);
@@ -1153,6 +1211,7 @@ document.getElementById('reset-filters').addEventListener('click', () => {
   document.getElementById('search').value = '';
   renderChips();
   render();
+  updateFilterSummary();
 });
 
 // Search
