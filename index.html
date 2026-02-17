@@ -489,6 +489,26 @@ tbody td {
 .countdown-badge.warning { background: #FFF3D6; color: #D97706; }
 .countdown-badge.soon { background: #FEF9C3; color: #A16207; }
 .countdown-badge.overdue { background: #FEE2E2; color: #991B1B; border: 1px dashed #DC2626; }
+.alert-verdict {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #EDE4FF;
+  color: #7C3AED;
+  margin-bottom: 8px;
+}
+.alert-reason {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: #FAF7F5;
+  border-radius: 10px;
+  border-left: 3px solid #E5E0EB;
+}
 .alt-label {
   font-size: 0.7rem;
   font-weight: 700;
@@ -497,26 +517,37 @@ tbody td {
   color: var(--text-light);
   margin-bottom: 6px;
 }
-.alt-chips {
+.alt-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
 }
-.alt-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  background: #D5F5EC;
-  color: #065F46;
+.alt-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.78rem;
 }
-.alt-chip .alt-saving {
-  font-weight: 400;
-  color: #047857;
-  font-size: 0.68rem;
+.alt-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.alt-tag.stack { background: #DBEAFE; color: #1E40AF; }
+.alt-tag.free { background: #D5F5EC; color: #065F46; }
+.alt-tag.synergy { background: #FFF7DB; color: #92400E; }
+.alt-tag.alternative { background: #F3F0F7; color: #6B6580; }
+.alt-item-name {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.alt-item-detail {
+  color: var(--text-light);
+  font-size: 0.75rem;
 }
 
 /* Footer */
@@ -1132,18 +1163,84 @@ document.querySelector('thead').addEventListener('click', e => {
 });
 
 // ==================== ALTERNATIVES ====================
+// Cross-referenced with existing stack to suggest smart consolidations
 const ALTERNATIVES = {
-  "Miro": [{ name: "FigJam", saving: "Inclus dans Figma" }],
-  "Pitch": [{ name: "Google Slides", saving: "Gratuit (déjà dans Workspace)" }, { name: "Canva", saving: "~60% moins cher" }],
-  "Social Insider": [{ name: "Metricool", saving: "~40% moins cher" }],
-  "Supermetrics": [{ name: "Funnel.io", saving: "À benchmarker" }],
-  "Filestage": [{ name: "Frame.io", saving: "~30% moins cher" }, { name: "Markup Hero", saving: "~70% moins cher" }],
-  "Screenful": [{ name: "Linear Insights", saving: "Inclus dans Linear" }],
-  "Signaturit": [{ name: "Yousign", saving: "~40% moins cher" }],
-  "PhantomBuster": [{ name: "Clay", saving: "Usage similaire" }, { name: "Arrêt possible", saving: "Moins d'usage depuis départ Quentin" }],
-  "Gamma": [{ name: "Arrêt recommandé", saving: "Non concluant d'après l'équipe" }],
-  "iStock": [{ name: "Adobe Stock", saving: "Mutualiser avec licence Adobe Story" }, { name: "Unsplash/Pexels", saving: "Gratuit pour certains usages" }],
-  "Pandadoc": [{ name: "Docusign", saving: "Déjà payé chez Farly" }, { name: "Yousign", saving: "~50% moins cher" }],
+  "Miro": {
+    verdict: "Challenger le renouvellement",
+    reason: "Figma (déjà payé chez Story + MS group) inclut FigJam, qui couvre 90% des usages whiteboard/collab.",
+    alts: [
+      { name: "FigJam", tag: "déjà dans le stack", saving: "Inclus dans les licences Figma existantes — 0 € supplémentaire" },
+    ]
+  },
+  "Pitch": {
+    verdict: "Arrêt recommandé",
+    reason: "82 sièges pour un outil de présentation alors que Google Slides (Workspace) et Notion (déjà payés) couvrent ce besoin. Sharepoint est aussi disponible chez Widely.",
+    alts: [
+      { name: "Google Slides", tag: "déjà dans le stack", saving: "Gratuit — déjà inclus dans Google Workspace" },
+      { name: "Notion", tag: "déjà dans le stack", saving: "Déjà payé — 174 sièges, supporte les présentations" },
+    ]
+  },
+  "Social Insider": {
+    verdict: "Benchmarker avant renouvellement",
+    reason: "3 500 $/an pour 5 sièges. Des alternatives matures existent à moindre coût pour le social listening.",
+    alts: [
+      { name: "Metricool", tag: "alternative", saving: "~40% moins cher — couvre benchmark + scheduling" },
+      { name: "Supermetrics", tag: "déjà dans le stack", saving: "Déjà payé chez Story — peut couvrir une partie du reporting social" },
+    ]
+  },
+  "Supermetrics": {
+    verdict: "Challenger le périmètre",
+    reason: "1 596 €/an pour 3 sièges. Vérifier si les connecteurs natifs Looker Studio / Google Sheets ne suffisent pas pour les dashboards.",
+    alts: [
+      { name: "Connecteurs natifs Google", tag: "gratuit", saving: "Gratuit — Looker Studio a des connecteurs Meta, Google Ads, etc." },
+      { name: "Funnel.io", tag: "alternative", saving: "À benchmarker — plus scalable si beaucoup de sources" },
+    ]
+  },
+  "Filestage": {
+    verdict: "Challenger le nombre de sièges",
+    reason: "47 sièges à 158 €/an. Vérifier les sièges réellement actifs. Frame.io (intégré Adobe) pourrait être une option vu la licence Adobe chez Story.",
+    alts: [
+      { name: "Frame.io", tag: "synergy Adobe", saving: "Inclus dans certaines licences Adobe — déjà payé chez Story" },
+      { name: "Notion", tag: "déjà dans le stack", saving: "Proofing basique possible via commentaires — déjà payé" },
+    ]
+  },
+  "Signaturit": {
+    verdict: "Mutualiser avec Farly",
+    reason: "330 €/an pour 3 sièges. Docusign est déjà payé chez Farly — possibilité de mutualiser les licences cross-BU.",
+    alts: [
+      { name: "Docusign", tag: "déjà dans le stack", saving: "Déjà payé chez Farly — mutualiser cross-BU" },
+      { name: "Yousign", tag: "alternative", saving: "~40% moins cher — solution française, conforme eIDAS" },
+    ]
+  },
+  "Pandadoc": {
+    verdict: "Mutualiser avec Farly",
+    reason: "1 868 $/an chez Widely. Docusign est déjà payé chez Farly — possibilité de mutualiser.",
+    alts: [
+      { name: "Docusign", tag: "déjà dans le stack", saving: "Déjà payé chez Farly — mutualiser la licence" },
+      { name: "Yousign", tag: "alternative", saving: "~50% moins cher si Docusign ne convient pas" },
+    ]
+  },
+  "iStock": {
+    verdict: "Mutualiser avec Adobe Stock",
+    reason: "1 759 €/mois (21k€/an). Adobe est déjà payé chez Story — Adobe Stock pourrait être inclus ou négocié en bundle.",
+    alts: [
+      { name: "Adobe Stock", tag: "synergy Adobe", saving: "Négociable en bundle avec la licence Adobe entreprise existante" },
+      { name: "Unsplash / Pexels", tag: "gratuit", saving: "Gratuit pour de nombreux usages éditoriaux" },
+    ]
+  },
+  "Overlord 2": {
+    verdict: "Faible enjeu — valider l'usage",
+    reason: "177 €/an pour 3 sièges. Coût marginal mais vérifier si les 3 licences sont bien utilisées.",
+    alts: []
+  },
+  "Artlist": {
+    verdict: "Vérifier le besoin",
+    reason: "575 €/an pour 1 siège. Envato (déjà payé) couvre aussi musique/SFX — possibilité de doublon partiel.",
+    alts: [
+      { name: "Envato / Envato Elements", tag: "déjà dans le stack", saving: "Déjà payé — couvre musique, vidéo, templates" },
+      { name: "Epidemic Sound", tag: "alternative", saving: "Alternative compétitive pour la musique libre de droits" },
+    ]
+  },
 };
 
 // ==================== RENEWAL ALERTS ====================
@@ -1197,13 +1294,21 @@ function renderAlerts() {
     }
 
     const dateStr = t.renewalDateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    const alts = ALTERNATIVES[t.name] || [];
-    const altHTML = alts.length > 0 ? `
-      <div class="alt-label">Alternatives suggérées</div>
-      <div class="alt-chips">
-        ${alts.map(a => `<span class="alt-chip">${a.name} <span class="alt-saving">— ${a.saving}</span></span>`).join('')}
-      </div>
-    ` : '';
+    const info = ALTERNATIVES[t.name];
+    const tagClass = tag => tag === 'déjà dans le stack' ? 'stack' : tag === 'gratuit' ? 'free' : tag.startsWith('synergy') ? 'synergy' : 'alternative';
+
+    let analysisHTML = '';
+    if (info) {
+      const verdictHTML = info.verdict ? `<span class="alert-verdict">${info.verdict}</span>` : '';
+      const reasonHTML = info.reason ? `<div class="alert-reason">${info.reason}</div>` : '';
+      const altsHTML = info.alts && info.alts.length > 0 ? `
+        <div class="alt-label">Alternatives identifiées</div>
+        <div class="alt-list">
+          ${info.alts.map(a => `<div class="alt-item"><span class="alt-tag ${tagClass(a.tag)}">${a.tag}</span><span class="alt-item-name">${a.name}</span><span class="alt-item-detail">${a.saving}</span></div>`).join('')}
+        </div>
+      ` : '';
+      analysisHTML = verdictHTML + reasonHTML + altsHTML;
+    }
 
     return `
       <div class="alert-card">
@@ -1215,7 +1320,7 @@ function renderAlerts() {
           </div>
           <div class="tool-cost">${fmt(t.annualCost)}/an</div>
         </div>
-        ${altHTML}
+        ${analysisHTML}
       </div>
     `;
   }).join('');
