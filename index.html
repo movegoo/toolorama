@@ -819,7 +819,7 @@ tbody td {
   </div>
 
   <footer class="footer">
-    Dashboard généré le 17/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
+    Dashboard généré le 18/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
   </footer>
 </div>
 
@@ -827,7 +827,7 @@ tbody td {
 // ==================== DATA ====================
 const USD_TO_EUR = 0.844;
 
-// Real data from Google Sheet (snapshot 17/02/2026)
+// Real data from Google Sheet (snapshot 18/02/2026)
 // Entries with "NC", "Je ne connais pas", or unknown pricing are flagged excluded=true
 const rawTools = [
   { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27, renewalDate: "2026-02-16", admin: "chloe.pelletier@mobsuccess.com", url: "https://miro.com/" },
@@ -877,11 +877,11 @@ const rawTools = [
   { name: "Filestage", team: "Sales, Adops, Conseil, Marketing, Partners, Créa - digital content, Créa - Ad content", bu: "Story", price: 13416, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-08-28", note: "Prix total, 33 sièges", admin: "melissa.abrini@storysuccess.fr", url: "https://filestage.io/" },
   { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-01-31", admin: "alexandre.binjamin@mobsuccess.com", url: "https://claude.ai/" },
   { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total", admin: "nicolas.tarricone@yougov.com", url: "https://platform.yougov.com/" },
-  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 8205.47, currency: "EUR", renewal: "quarterly", seats: 1, renewalDate: "2026-02-28", note: "Prix trimestriel", url: "https://www.hubspot.fr/" },
-  { name: "ChatGPT (duplicate)", team: "Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "NC — doublon probable" },
-  { name: "Pitch", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 8205.47, currency: "EUR", renewal: "quarterly", seats: 1, renewalDate: "2026-02-28", note: "Prix trimestriel total, 8 utilisateurs", url: "https://www.hubspot.fr/" },
+  { name: "ChatGPT", team: "Conseil", bu: "MS group", price: 30, currency: "USD", renewal: "yearly", seats: 11, note: "Abo annuel Conseil (William)" },
+  { name: "Pitch", team: "Conseil", bu: "Widely", price: 204, currency: "EUR", renewal: "yearly", seats: 11 },
   { name: "Sharepoint", team: "Conseil", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
-  { name: "Monday", team: "Adops, Conseil", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix NC" },
+  { name: "Monday", team: "Adops, Conseil", bu: "MS group", price: 192, currency: "USD", renewal: "yearly", seats: 8 },
   { name: "Apollo.io", team: "Sales", bu: "Farly", price: 0, currency: "EUR", renewal: "monthly", seats: 1, admin: "samira.latoui@mobsuccess.com", url: "https://app.apollo.io/" },
   { name: "Crowdin", team: "Product", bu: "MS group", price: 1595, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-01", admin: "philippe.auriach@mobsuccess.com", url: "https://crowdin.com/" },
   { name: "Pennylane", team: "Finances", bu: "MS group", price: 12000, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-28", admin: "clement.nogues@mobsuccess.com", url: "https://app.pennylane.com/" },
