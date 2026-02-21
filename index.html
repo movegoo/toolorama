@@ -702,7 +702,7 @@ tbody td {
       <p style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">Suivi des coûts outils SaaS & Tech</p>
     </div>
     <div class="header-meta">
-      <div class="badge"><span class="dot" style="background:var(--mint)"></span> 17 février 2026</div>
+      <div class="badge"><span class="dot" style="background:var(--mint)"></span> 21 février 2026</div>
       <div class="badge"><span class="dot" style="background:var(--yellow)"></span> 1 USD = 0.844 EUR</div>
     </div>
   </header>
@@ -819,7 +819,7 @@ tbody td {
   </div>
 
   <footer class="footer">
-    Dashboard généré le 18/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
+    Dashboard généré le 21/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
   </footer>
 </div>
 
@@ -827,7 +827,7 @@ tbody td {
 // ==================== DATA ====================
 const USD_TO_EUR = 0.844;
 
-// Real data from Google Sheet (snapshot 18/02/2026)
+// Real data from Google Sheet (snapshot 21/02/2026)
 // Entries with "NC", "Je ne connais pas", or unknown pricing are flagged excluded=true
 const rawTools = [
   { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27, renewalDate: "2026-02-16", admin: "chloe.pelletier@mobsuccess.com", url: "https://miro.com/" },
@@ -840,7 +840,7 @@ const rawTools = [
   { name: "Notion", team: "All", bu: "MS group", price: 0, currency: "EUR", renewal: "monthly", seats: 174, admin: "chloe.pelletier@mobsuccess.com", url: "https://notion.com/" },
   { name: "Notion (pages publiques)", team: "All", bu: "MS group", price: 23.5, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-03-06", admin: "chloe.pelletier@mobsuccess.com", url: "https://notion.com/" },
   { name: "Pandadoc", team: "Sales", bu: "Widely", price: 1868, currency: "USD", renewal: "yearly", seats: 1, renewalDate: "2026-07-04", admin: "sales@mobsuccess.com", url: "https://app.pandadoc.com/a/#/settings/billing" },
-  { name: "Copilot", team: "Tech", bu: "MS group", price: 21.6, currency: "EUR", renewal: "monthly", seats: 4, admin: "antoine.hinge@mobsuccess.com", url: "https://github.com/" },
+  { name: "Copilot", team: "Tech", bu: "MS group", price: 21.6, currency: "EUR", renewal: "monthly", seats: 4, admin: "antoine.hinge@mobsuccess.com", url: "https://claude.ai/" },
   { name: "Copilot", team: "Product", bu: "MS group", price: 10, currency: "USD", renewal: "monthly", seats: 5, admin: "antoine.hinge@mobsuccess.com", url: "https://github.com/" },
   { name: "Pycharm", team: "Tech", bu: "MS group", price: 300, currency: "EUR", renewal: "yearly", seats: 2, admin: "antoine.hinge@mobsuccess.com", url: "https://jetbrains.com/" },
   { name: "DataGrip", team: "Tech", bu: "MS group", price: 259, currency: "EUR", renewal: "yearly", seats: 1, admin: "antoine.hinge@mobsuccess.com", url: "https://jetbrains.com/" },
@@ -890,9 +890,26 @@ const rawTools = [
   { name: "Quicksight", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com", url: "https://eu-central-1.quicksight.aws.amazon.com/" },
   { name: "Monday", team: "Adops", bu: "Widely", price: 19, currency: "EUR", renewal: "monthly", seats: 16, admin: "yannis.echchelh@mobsuccess.com", url: "https://storysuccess.monday.com/" },
   { name: "ChatGPT", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com", url: "https://chatgpt.com/" },
-  { name: "Filestage", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "monthly", seats: 16, excluded: true, note: "Prix inconnu" },
   { name: "Microsoft Office", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com" },
-  { name: "Notion", team: "Adops", bu: "Widely", price: 0, currency: "EUR", renewal: "yearly", seats: 16, excluded: true, note: "Prix inconnu", admin: "olivier.ta@mobsuccess.com" },
+  // New entries from 20/02/2026
+  { name: "QuickSight Author", team: "All", bu: "MS group", price: 26.4, currency: "USD", renewal: "monthly", seats: 46, admin: "christopher.allene@mobsuccess.com", url: "https://aws.amazon.com/quick/quicksight/pricing/" },
+  { name: "QuickSight Reader", team: "All", bu: "MS group", price: 3.3, currency: "USD", renewal: "monthly", seats: 32, admin: "christopher.allene@mobsuccess.com", url: "https://aws.amazon.com/quick/quicksight/pricing/" },
+  { name: "QuickSight Author Pro", team: "All", bu: "MS group", price: 44, currency: "USD", renewal: "monthly", seats: 2, admin: "christopher.allene@mobsuccess.com", url: "https://aws.amazon.com/quick/quicksight/pricing/" },
+  { name: "QuickSight Reader Pro", team: "All", bu: "MS group", price: 22, currency: "USD", renewal: "monthly", seats: 2, admin: "christopher.allene@mobsuccess.com", url: "https://us-east-1.console.aws.amazon.com/billing/" },
+  { name: "Zapier", team: "All", bu: "MS group", price: 344, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-04-05", admin: "christopher.allene@mobsuccess.com", url: "https://zapier.com/" },
+  { name: "Crowdin", team: "Tech, Product", bu: "MS group", price: 132, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-10-02", admin: "christopher.allene@mobsuccess.com", url: "https://crowdin.com/settings#payments", note: "Abo Christopher" },
+  { name: "Google Workspace", team: "All", bu: "MS group", price: 16.2, currency: "EUR", renewal: "monthly", seats: 192, admin: "christopher.allene@mobsuccess.com", url: "https://admin.google.com/" },
+  { name: "Google Meet Hardware", team: "All", bu: "MS group", price: 20, currency: "EUR", renewal: "yearly", seats: 4, renewalDate: "2026-07-24", admin: "christopher.allene@mobsuccess.com", url: "https://admin.google.com/" },
+  { name: "Comeen", team: "All", bu: "MS group", price: 15, currency: "EUR", renewal: "yearly", seats: 4, renewalDate: "2026-08-01", admin: "christopher.allene@mobsuccess.com", url: "https://comeen.com/" },
+  { name: "Better Status", team: "Tech, Product", bu: "MS group", price: 180, currency: "EUR", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "http://mobsuccess.betteruptime.com/" },
+  { name: "Vercel", team: "All", bu: "MS group", price: 100, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://vercel.com/" },
+  { name: "LangFuse", team: "Tech, Product", bu: "MS group", price: 29, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://cloud.langfuse.com/" },
+  { name: "GitHub", team: "Tech", bu: "MS group", price: 21, currency: "USD", renewal: "yearly", seats: 43, renewalDate: "2026-08-06", admin: "christopher.allene@mobsuccess.com", url: "https://github.com/enterprises/mobsuccess/billing" },
+  { name: "GitHub GHA", team: "Tech", bu: "MS group", price: 500, currency: "USD", renewal: "monthly", seats: 1, note: "Tests unitaires CI/CD", admin: "christopher.allene@mobsuccess.com", url: "https://github.com/enterprises/mobsuccess/billing" },
+  { name: "GitHub Copilot", team: "Tech", bu: "MS group", price: 39, currency: "USD", renewal: "monthly", seats: 8, admin: "christopher.allene@mobsuccess.com", url: "https://github.com/organizations/mobsuccess-devops/settings/copilot" },
+  { name: "Sentry.io", team: "Tech, Product", bu: "MS group", price: 152, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://mobsuccess.sentry.io/" },
+  { name: "Postman", team: "Tech", bu: "MS group", price: 23, currency: "USD", renewal: "monthly", seats: 33, admin: "christopher.allene@mobsuccess.com", url: "https://www.postman.com/billing/overview" },
+  { name: "UptimeBot", team: "Tech", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://uptime.bot/" },
 ];
 
 // ==================== COMPUTE ====================
@@ -1396,7 +1413,7 @@ const ALTERNATIVES = {
 
 // ==================== RENEWAL ALERTS ====================
 function renderAlerts() {
-  const today = new Date('2026-02-17');
+  const today = new Date('2026-02-21');
   const in60 = new Date(today);
   in60.setDate(in60.getDate() + 60);
 
