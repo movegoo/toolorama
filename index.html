@@ -702,7 +702,7 @@ tbody td {
       <p style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">Suivi des coûts outils SaaS & Tech</p>
     </div>
     <div class="header-meta">
-      <div class="badge"><span class="dot" style="background:var(--mint)"></span> 21 février 2026</div>
+      <div class="badge"><span class="dot" style="background:var(--mint)"></span> 25 février 2026</div>
       <div class="badge"><span class="dot" style="background:var(--yellow)"></span> 1 USD = 0.844 EUR</div>
     </div>
   </header>
@@ -819,7 +819,7 @@ tbody td {
   </div>
 
   <footer class="footer">
-    Dashboard généré le 21/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
+    Dashboard généré le 25/02/2026 — Données snapshot Google Sheet — Taux USD→EUR: 0.844
   </footer>
 </div>
 
@@ -827,7 +827,7 @@ tbody td {
 // ==================== DATA ====================
 const USD_TO_EUR = 0.844;
 
-// Real data from Google Sheet (snapshot 21/02/2026)
+// Real data from Google Sheet (snapshot 25/02/2026)
 // Entries with "NC", "Je ne connais pas", or unknown pricing are flagged excluded=true
 const rawTools = [
   { name: "Miro", team: "Conseil, Tech, Product, Partners", bu: "MS group", price: 8, currency: "USD", renewal: "yearly", seats: 27, renewalDate: "2026-02-16", admin: "chloe.pelletier@mobsuccess.com", url: "https://miro.com/" },
@@ -873,7 +873,7 @@ const rawTools = [
   { name: "IntelliJ", team: "Tech", bu: "MS group", price: 240, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2027-02-01", admin: "florent.sorel@mobsuccess.com", url: "https://www.jetbrains.com/idea/" },
   { name: "Supermetrics", team: "Media Buying & UA, Conseil", bu: "Story", price: 1596, currency: "EUR", renewal: "yearly", seats: 3, renewalDate: "2026-02-18", admin: "eloah.vanhoucke@storysuccess.fr", url: "https://hub.supermetrics.com/" },
   { name: "Adobe", team: "Créa, Vidéo", bu: "Story", price: 0, currency: "EUR", renewal: "yearly", seats: 28, excluded: true, note: "Prix enterprise inconnu", admin: "jessica@successfuel.io", url: "https://adminconsole.adobe.com/" },
-  { name: "Pitch", team: "All", bu: "MS group", price: 204, currency: "EUR", renewal: "yearly", seats: 82, renewalDate: "2026-01-12", admin: "eloah.vanhoucke@storysuccess.fr", url: "https://app.pitch.com/" },
+  { name: "Pitch", team: "All", bu: "MS group", price: 204, currency: "EUR", renewal: "yearly", seats: 82, renewalDate: "2026-12-12", admin: "eloah.vanhoucke@storysuccess.fr", url: "https://app.pitch.com/" },
   { name: "Filestage", team: "Sales, Adops, Conseil, Marketing, Partners, Créa - digital content, Créa - Ad content", bu: "Story", price: 13416, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-08-28", note: "Prix total, 33 sièges", admin: "melissa.abrini@storysuccess.fr", url: "https://filestage.io/" },
   { name: "Claude", team: "Product", bu: "MS group", price: 18, currency: "EUR", renewal: "monthly", seats: 1, renewalDate: "2026-01-31", admin: "alexandre.binjamin@mobsuccess.com", url: "https://claude.ai/" },
   { name: "Yougov", team: "Sales, Adops, Conseil, Marketing, Partners", bu: "MS group", price: 75000, currency: "EUR", renewal: "yearly", seats: 1, note: "Sièges illimités, prix total", admin: "nicolas.tarricone@yougov.com", url: "https://platform.yougov.com/" },
@@ -910,6 +910,12 @@ const rawTools = [
   { name: "Sentry.io", team: "Tech, Product", bu: "MS group", price: 152, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://mobsuccess.sentry.io/" },
   { name: "Postman", team: "Tech", bu: "MS group", price: 23, currency: "USD", renewal: "monthly", seats: 33, admin: "christopher.allene@mobsuccess.com", url: "https://www.postman.com/billing/overview" },
   { name: "UptimeBot", team: "Tech", bu: "MS group", price: 20, currency: "USD", renewal: "monthly", seats: 1, admin: "christopher.allene@mobsuccess.com", url: "https://uptime.bot/" },
+  // New entries from 24/02/2026
+  { name: "Matomo", team: "Ops/Products, Media Buying & UA, Product, Partners, Créa - Ad content", bu: "MS group", price: 5710, currency: "EUR", renewal: "yearly", seats: 1, renewalDate: "2026-02-17", admin: "sarah.briquet@mobsuccess.com", url: "https://trackmobsuccess.matomo.cloud/" },
+  { name: "Monday", team: "All", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "Prix inconnu (Pauline)", url: "https://storysuccess.monday.com/" },
+  { name: "Filestage", team: "Conseil, Marketing, Créa - digital/Ad content, Édito, Vidéo", bu: "Story", price: 237, currency: "EUR", renewal: "yearly", seats: 30, renewalDate: "2026-05-01", admin: "quentin@storysuccess.fr", url: "https://app.filestage.io/", note: "Entrée Pauline — doublon potentiel avec entrée Melissa (13 416€)" },
+  { name: "HubSpot", team: "Sales, Conseil, Finances", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 0, excluded: true, note: "4 187€/an total (Pauline) — doublon avec entrée principale", admin: "xavier.dupont@mobsuccess.com", url: "https://app-eu1.hubspot.com/" },
+  { name: "Pitch", team: "Sales, Conseil, Marketing, Créa", bu: "MS group", price: 0, currency: "EUR", renewal: "yearly", seats: 83, excluded: true, note: "Prix inconnu (Pauline) — renouvellement 12/12/2026" },
 ];
 
 // ==================== COMPUTE ====================
@@ -1413,7 +1419,7 @@ const ALTERNATIVES = {
 
 // ==================== RENEWAL ALERTS ====================
 function renderAlerts() {
-  const today = new Date('2026-02-21');
+  const today = new Date('2026-02-25');
   const in60 = new Date(today);
   in60.setDate(in60.getDate() + 60);
 
